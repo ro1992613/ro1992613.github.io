@@ -77,42 +77,44 @@
    <div class="am-u-md-8"> 
     <hr class="am-article-divider blog-hr"> 
     <article class="blog-main"> 
-     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">spring boot 加载资源路径配置和classpath问题</span></a> </h3> 
-     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-09-28</span> </h4> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">监听器及springboot实现</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-10-22</span> </h4> 
      <hr class="am-article-divider blog-hr"> 
      <div class="am-g blog-content"> 
       <div id="gitblog_content">
-       <p>1、spring boot默认加载文件的路径： </p>
-       <ul> 
-        <li>/META-INF/resources/ </li> 
-        <li>/resources/ </li> 
-        <li>/static/ </li> 
-        <li>/public/</li> 
-       </ul>
-       <p>我们也可以从spring boot源码也可以看到：</p>
-       <pre name="code"><code>private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {  
-        "classpath:/META-INF/resources/", 
-        "classpath:/resources/",  
-        "classpath:/static/", 
-        "classpath:/public/" };  </code>
-        <ul>
-         <li>1</li>
-         <li>2</li>
-         <li>3</li>
-         <li>4</li>
-         <li>5</li>
-        </ul></pre>
-       <p>2、Classpath含义</p>
-       <ol> 
-        <li>存放各种资源配置文件 eg.init.properties log4j.properties struts.xml</li> 
-        <li>存放模板文件 eg.actionerror.ftl</li> 
-        <li>存放class文件对应的是项目开发时的src目录编译文件 </li> 
-       </ol>
-       <p><font color="#0000FF" face="黑体">总结：这是一个定位资源的入口 </font> <br> 一般java项目中 classpath存在与 WEB-INFO/目录。 <br> 当我们需要某个class时，系统会自动在CLASSPATH里面搜索，如果是jar，就自动从jar里面查找，如果是普通的目录，则在目录下面按照package进行查找。 <br> 但与PATH不同的是，默认的CLASSPATH是不包含当前目录的，这也是CLASSPATH里面要包含一个点的道理了。</p>
-       <p><font color="#ff0000">Tomcat</font>下的Web应用有两个预置的classpath : WEB-INF/classes 和WEB-INF/lib启动项目，项目就会加载这两个目录里的数据。这是war包的规范.要改变预置的classpath比较麻烦，在Tomcat的配置文件里没有发现类似的配置，要实现自己的classloader才能达到目的。</p>
-       <p>一个在tomcat中运行的web应用.它的classpath都包括如下目录: <br> 我知道的有: <br> %tomcat%/lib <br> web-inf/lib <br> web-inf/classes <br> 环境变量里的classpath</p>
-       <p>总结：classpath这是一个定位资源的入口.classpath下 <font color="red">lib的优先级大于classes</font>;</p>
+       <div>
+        监听器
+        <br>
+       </div>
+       <p>现在来说说Servlet的监听器Listener，<br>它是实现了javax.servlet.ServletContextListener 接口的服务器端程序，<br>它也是随web应用的启动而启动，只初始化一次，<br>随web应用的停止而销毁。<br>主要作用是： 做一些初始化的内容添加工作、设置一些基本的内容、比如一些参数或者是一些固定的对象等等。<br>下面利用监听器对数据库连接池<br><br></p>
+       <div>
+        &nbsp;
+        <span style="background-color: rgb(241, 241, 241);">package dc.gz.listeners;&nbsp; &nbsp;</span>
+       </div>
+       <pre><code> import javax.servlet.ServletContext;   <br> import javax.servlet.ServletContextEvent;   <br> import javax.servlet.ServletContextListener;   <br> import org.apache.commons.dbcp.BasicDataSource;   <br>    <br>  /**  <br>  * Web应用监听器  <br>  */   <br> public class MyServletContextListener implements ServletContextListener {     <br>    // 应用监听器的销毁方法   <br>    public void contextDestroyed(ServletContextEvent event) {   <br>        ServletContext sc = event.getServletContext();   <br>        // 在整个web应用销毁之前调用，将所有应用空间所设置的内容清空   <br>        sc.removeAttribute("dataSource");   <br>        System.out.println("销毁工作完成...");   <br>    }   <br>    <br>    // 应用监听器的初始化方法   <br>    public void contextInitialized(ServletContextEvent event) {   <br>        // 通过这个事件可以获取整个应用的空间   <br>        // 在整个web应用下面启动的时候做一些初始化的内容添加工作   <br>        ServletContext sc = event.getServletContext();   <br>        // 设置一些基本的内容；比如一些参数或者是一些固定的对象   <br>        // 创建DataSource对象，连接池技术 dbcp   <br>        BasicDataSource bds = new BasicDataSource();   <br>        bds.setDriverClassName("com.mysql.jdbc.Driver");                       <br>        bds.setUrl("jdbc:mysql://localhost:3306/hibernate");   <br>        bds.setUsername("root");   <br>        bds.setPassword("root");   <br>        bds.setMaxActive(10);//最大连接数   <br>        bds.setMaxIdle(5);//最大管理数   <br>        //bds.setMaxWait(maxWait); 最大等待时间   <br>        // 把 DataSource 放入ServletContext空间中，   <br>        // 供整个web应用的使用(获取数据库连接)   <br>        sc.setAttribute("dataSource", bds);   <br>        System.out.println("应用监听器初始化工作完成...");   <br>        System.out.println("已经创建DataSource...");   <br>    }   <br> }</code></pre>
        <p><br></p>
+       <div>
+        <br>
+       </div>
+       <div>
+        &nbsp;
+       </div>
+       <div>
+        <pre><code>&lt;!-- 配置应用监听器  --&gt;   <br>  &lt;listener&gt;   <br>      &lt;listener-class&gt;dc.gz.listeners.MyServletContextListener&lt;/listener-class&gt;   <br>  &lt;/listener&gt;</code></pre>
+        <p><br></p>
+       </div>
+       <div>
+        &nbsp;
+        <br>这样配置好了之后，以后在web应用中就可以通过ServletContext取得BasicDataSource对象，从而获取与数据库的连接，提高性能，方便使用。
+        <br>
+        <br>
+        <br>spring boot
+        <br>
+        <div>
+         <pre><code>package com.example.Listener;<br>import javax.servlet.ServletContextEvent;<br>import javax.servlet.ServletContextListener;<br>import javax.servlet.annotation.WebListener;<br>@WebListener<br>public class IndexListener2 implements ServletContextListener{<br>  @Override<br>  public void contextDestroyed(ServletContextEvent arg0) {<br>    System.out.println("IndexListener2 contextDestroyed method");<br>  }<br>  @Override<br>  public void contextInitialized(ServletContextEvent arg0) {<br>    System.out.println("IndexListener2 contextInitialized method");<br>  }<br>}</code></pre>
+         <p><br></p>
+        </div>
+       </div>
       </div> 
      </div> 
     </article> 

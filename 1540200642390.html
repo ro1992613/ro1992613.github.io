@@ -77,12 +77,26 @@
    <div class="am-u-md-8"> 
     <hr class="am-article-divider blog-hr"> 
     <article class="blog-main"> 
-     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">代码</span></a> </h3> 
-     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-09-28</span> </h4> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">过滤器及springboot实现</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-10-22</span> </h4> 
      <hr class="am-article-divider blog-hr"> 
      <div class="am-g blog-content"> 
       <div id="gitblog_content">
-       <pre><code>package com.gitblog.create;<br><br>import java.io.File;<br>import java.io.IOException;<br>import java.util.List;<br>import java.util.Map;<br><br>import org.jsoup.Jsoup;<br>import org.jsoup.nodes.Document;<br>import org.jsoup.nodes.Element;<br>import org.springframework.beans.factory.annotation.Value;<br>import org.springframework.context.annotation.PropertySource;<br>import org.springframework.stereotype.Component;<br><br>import cn.hutool.core.io.FileUtil;<br><br>@PropertySource("classpath:application.properties")<br>@Component<br>public class BlogCreater {<br><br>    <br>    @Value("${gitblog.savepath}")<br>    private String savepath;<br>    <br>    public void createBlog(List&lt;Map&lt;String,Object&gt;&gt; list) {<br>        String srcPath=FileUtil.getAbsolutePath("classpath:templates/assets/");<br>        FileUtil.copy(srcPath, savepath, true);<br>        File template=FileUtil.file("templates/blog.html");<br>        try {<br>            int i=1;<br>            for(Map&lt;String,Object&gt; data:list) {<br>                Document doc=Jsoup.parse(template, "utf-8");<br>                Element title = doc.select("span#gitblog_title").first(); // &lt;div&gt;&lt;/div&gt;<br>                title.html(data.get("TITLE").toString()); <br>                <br>                Element content = doc.select("div#gitblog_content").first(); // &lt;div&gt;&lt;/div&gt;<br>                content.html(data.get("CONTENT").toString()); <br>                <br>                Element date = doc.select("span#gitblog_date").first(); // &lt;div&gt;&lt;/div&gt;<br>                date.html(data.get("CREATE_TIME").toString()); <br>                FileUtil.writeString(doc.toString(), savepath+"/"+i+".html", "utf-8");<br>                i++;<br>            }<br>        } catch (IOException e) {<br>            // TODO Auto-generated catch block<br>            e.printStackTrace();<br>        }<br>    }<br>}</code></pre>
+       <div>
+        1.过滤器
+        <br>
+       </div>
+       <p>Servlet中的过滤器Filter是实现了javax.servlet.Filter接口的服务器端程序，主要的用途是过滤字符编码、做一些业务逻辑判断等。其工作原理是，只要你在web.xml文件配置好要拦截的客户端请求，它都会帮你拦截到请求，此时你就可以对请求或响应(Request、Response)统一设置编码，简化操作；同时还可进行逻辑判断，如用户是否已经登陆、有没有权限访问该页面等等工作。它是随你的web应用启动而启动的，只初始化一次，以后就可以拦截相关请求，只有当你的web应用停止或重新部署的时候才销毁</p>
+       <p><br></p>
+       <pre><code>package ...;   <br>import ...;   <br>// 主要目的：过滤字符编码；其次，做一些应用逻辑判断等.   <br>// Filter跟web应用一起启动   <br>// 当web应用重新启动或销毁时，Filter也被销毁   <br>public class MyCharsetFilter implements Filter {   <br>     private FilterConfig config = null;   <br>     public void destroy() {   <br>         System.out.println("MyCharsetFilter准备销毁...");   <br>     }   <br>    <br>     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain chain) throws IOException, ServletException {   <br>         // 强制类型转换   <br>         HttpServletRequest request = (HttpServletRequest)arg0;   <br>         HttpServletResponse response = (HttpServletResponse)arg1;   <br>         // 获取web.xm设置的编码集，设置到Request、Response中         <br>         request.setCharacterEncoding(config.getInitParameter("charset"));          <br>         response.setContentType(config.getInitParameter("contentType"));          <br>         response.setCharacterEncoding(config.getInitParameter("charset"));            <br>        // 将请求转发到目的地   <br>         chain.doFilter(request, response);   <br>     }   <br>    <br>     public void init(FilterConfig arg0) throws ServletException {   <br>         this.config = arg0;   <br>         System.out.println("MyCharsetFilter初始化...");   <br>     }   <br> }</code></pre>
+       <pre><code>&lt;filter&gt;   <br>      &lt;filter-name&gt;filter&lt;/filter-name&gt;   <br>      &lt;filter-class&gt;dc.gz.filters.MyCharsetFilter&lt;/filter-class&gt;   <br>      &lt;init-param&gt;   <br>          &lt;param-name&gt;charset&lt;/param-name&gt;   <br>          &lt;param-value&gt;UTF-8&lt;/param-value&gt;   <br>      &lt;/init-param&gt;   <br>      &lt;init-param&gt;   <br>          &lt;param-name&gt;contentType&lt;/param-name&gt;   <br>          &lt;param-value&gt;text/html;charset=UTF-8&lt;/param-value&gt;   <br>      &lt;/init-param&gt;   <br>  &lt;/filter&gt;   <br>  &lt;filter-mapping&gt;   <br>      &lt;filter-name&gt;filter&lt;/filter-name&gt;   <br>      &lt;!-- * 代表截获所有的请求  或指定请求/test.do  /xxx.do --&gt;   <br>      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;   <br>  &lt;/filter-mapping&gt;</code></pre>
+       <p>在spring boot中加入filter&nbsp;</p>
+       <pre><code>@Component<br>@WebFilter(urlPatterns = "/webapi/*", filterName = "authFilter")<br>public class AuthFilter implements Filter {<br>    ......<br>}</code></pre>
+       <p>&nbsp;或者&nbsp;</p>
+       <pre><code>@Bean    <br>public FilterRegistrationBean testFilterRegistration() {        <br>    FilterRegistrationBean registration = new FilterRegistrationBean(new TestFilter());     <br>    registration.addUrlPatterns("/webapi/*"); //        <br>    registration.addInitParameter("paramName", "paramValue"); //        <br>    registration.setName("testFilter");     <br>    return registration;    <br>}</code></pre>
+       <p><br></p>
+       <p>&nbsp;<br></p>
+       <p>&nbsp;<br></p>
        <p><br></p>
       </div> 
      </div> 
