@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>title</title>
+    <title>GitBlog</title>
     <link rel="stylesheet" href="assets/css/amazeui.min.css">
     <style>
         html,body{
@@ -19,49 +19,79 @@
 <body>
     <header class="am-topbar">
         <h1 class="am-topbar-brand">
-            <a href="#">Amaze UI</a>
+            <a href="#">GitBlog</a>
         </h1>
         <div class="am-collapse am-topbar-collapse">
             <ul class="am-nav am-nav-pills am-topbar-nav">
                 <li><a href="index.html">首页</a></li>
-                <li><a href="#">项目</a></li>
+                <li><a target="_blank" href="https://github.com/ro1992613/gitblog">gitblog项目</a></li>
             </ul>
 
-            <form class="am-topbar-form am-topbar-right am-form-inline" role="search">
+            <div class="am-topbar-form am-topbar-right am-form-inline" role="search">
                 <div class="am-form-group">
-                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索">
+                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索" id="search_value">
                 </div>
-            </form>
+                <div class="am-form-group">
+                        <button class="am-btn am-btn-default am-btn-sm" onclick="search()"><span class="am-icon-search"></span></button>
+                </div>
+            </div>
 
         </div>
     </header>
     <div style="width:100%;height: auto;display:flex;">
-        <div style="flex:12;padding: 5px;height: auto;">
+        <div style="flex:12;padding: 5px;height: auto;">         
             <div class="am-panel am-panel-default">
                 <div class="am-panel-bd" style="height: auto;" id="article-list">
 
                 </div>
+                <ul data-am-widget="pagination"
+                class="am-pagination am-pagination-default">
+            
+                    <li class="am-pagination-first ">
+                    <a href="javascript:void(0);" class="" onclick="first_page()">第一页</a>
+                    </li>
+            
+                    <li class="am-pagination-prev ">
+                    <a href="javascript:void(0);" class="" onclick="previous_page()">上一页</a>
+                    </li>
+                    <li class="am-disabled"><a href="javascript:void(0);" id="page_info"></a></li>
+                    <li class="am-pagination-next ">
+                    <a href="javascript:void(0);" class="" onclick="next_page()">下一页</a>
+                    </li>
+            
+                    <li class="am-pagination-last ">
+                    <a href="javascript:void(0);" class="" onclick="last_page()">最末页</a>
+                    </li>
+                    <li>
+                        <input type="text" class="am-form-field" size="3" id="input_page_index">
+                    </li>
+                    <li class="am-pagination-last ">
+                        <a href="javascript:void(0);" class="" onclick="goto_page()">跳转</a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div style="flex:4;">
+        <div style="flex:4;padding: 5px;">
             <section class="am-panel am-panel-default">
-                    <div class="am-panel-hd">关于我</div>
+                <div class="am-panel-bd">
+                    <iframe height="50"  frameborder="0" scrolling="no" hspace="0"  src="http://i.tianqi.com/index.php?c=code&id=12&icon=1&num=2&site=12">
+                    </iframe> 
+                </div>
+            </section>
+            <section class="am-panel am-panel-default">
+                    <div class="am-panel-hd">关于项目</div>
                     <div class="am-panel-bd">
-                        <p>前所未有的中文云端字型服务，让您在 web 平台上自由使用高品质中文字体，跨平台、可搜寻，而且超美。云端字型是我们的事业，推广字型学知识是我们的志业。从字体出发，关心设计与我们的生活，justfont
-                        blog
-                        正是為此而生。</p>
-                        <a class="am-btn am-btn-success am-btn-sm" href="#">查看更多 →</a>
+                        <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p>
+                        <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p>
+                        <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p>
+                        <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p>
+                        <a class="am-btn am-btn-success am-btn-sm"  target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a>
                     </div>
                     </section>
                     <section class="am-panel am-panel-default">
                     <div class="am-panel-hd">文章目录</div>
                     <ul class="am-list blog-list" id="simple-list">
                         <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li>
-                        <li><a href="#">[but]服貿最前線？－再訪桃園機場</a></li>
-                        <li><a href="#">到日星鑄字行學字型</a></li>
-                        <li><a href="#">glyph font vs. 漢字（上）</a></li>
-                        <li><a href="#">浙江民間書刻體上線</a></li>
-                        <li><a href="#">[極短篇] Android v.s iOS，誰的字體好讀？</a></li>
                     </ul>
                     </section>
         </div>
@@ -70,24 +100,106 @@
     <script src="assets/js/amazeui.min.js"></script>
     <script src="store.js"></script>
     <script>
+        var page_size=20;
+        var page_index=1;
         function addHtml(v){
-            var html='<article class="blog-entry-article"><div class="blog-entry-text blog-text-center"> ';
-            html=html+'<h1 style="margin-bottom:2px"> <a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></h1>'; 
+            var html='';
+            html=html+'<article class="blog-entry-article"><div class="blog-entry-text blog-text-center"> ';
+            html=html+'<h1 style="margin-bottom:2px"> <a target="_blank" href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></h1>'; 
             html=html+'<span style="font-size: 15px;">'+v.create_time+'</span>';
             html=html+'<p>'+v.description+'</p>';
             html=html+'</div><hr></article>';
             return html;
         }
         function addHtml_simple(v){
-          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
-          return html;
-      }
-        $(function() {
+            var html='<li><a target="_blank" href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+            return html;
+        }
+
+        function initList(){
             $("#article-list").html("");
+            var length=data.length;
+            var max_page=Math.ceil(length/page_size);
+            $("#page_info").html("当前是第"+page_index+"页，共计"+max_page+"页");
+            if(page_index>max_page){
+                page_index=max_page;
+            }
+            var page=(page_index-1)*page_size;
+            for(var i=0;i<page_size;i++){
+                if(page<length){
+                    if(data[page]){
+                        var html=addHtml(data[page]);
+                        $("#article-list").append(html);
+                    }
+                }
+                page++;
+            }
+        }
+
+        function first_page(){
+            page_index=1;
+            initList();
+        }
+        function last_page(){
+            var length=data.length;
+            var max_page=Math.ceil(length/page_size);
+            page_index=max_page;
+            initList();
+        }
+        function previous_page(){
+            page_index--;
+            if(page_index<=1){
+                page_index=1;
+            }
+            initList();
+        }
+        function next_page(){
+            var length=data.length;
+            var max_page=Math.ceil(length/page_size);
+            page_index++;
+            if(page_index>=max_page){
+                page_index=max_page;
+            }
+            initList();
+        }
+        function goto_page(){
+            var length=data.length;
+            var max_page=Math.ceil(length/page_size);
+            var input_value=document.getElementById("input_page_index").value;
+            var re = /^[0-9]+.?[0-9]*/;//判断字符串是否为数字//判断正整数/[1−9]+[0−9]∗]∗/ 
+        　　if (!re.test(input_value)) { 
+        　　　　alert("请输入数字"); 
+        　　} else{
+                if(input_value<=1){
+                    input_value=1;
+                }
+                if(input_value>=max_page){
+                    input_value=max_page;
+                }
+                page_index=input_value;
+                initList();
+            }
+        }
+
+        function search(){
+            var count=0;
+            $("#article-list").html("");
+            var input_value=document.getElementById("search_value").value;
+            data.map(function(v,index){
+                if(v.title.indexOf(input_value) != -1 ){
+                    var html=addHtml(v);
+                    $("#article-list").append(html);
+                    count++;
+                }
+            });
+
+            $("#page_info").html("当前是第1页，共计"+count+"条");
+        }
+
+        $(function() {
+            initList();
             $("#simple-list").html("");
             data.map(function(v,index){
-                var html=addHtml(v);
-                $("#article-list").append(html);
                 if(index<=10){
                     var html=addHtml_simple(v);
                     $("#simple-list").append(html);
