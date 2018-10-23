@@ -8,7 +8,6 @@
   <meta name="format-detection" content="telephone=no"> 
   <meta name="renderer" content="webkit"> 
   <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
-  <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
   <style>
     @media only screen and (min-width: 1200px) {
       .blog-g-fixed {
@@ -119,8 +118,22 @@
       </div> 
      </div> 
     </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'https://github.com/ro1992613/gitblog_comment',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('container')
+      </script> 
     <hr class="am-article-divider blog-hr"> 
-    <div id="container"></div> 
    </div> 
    <div class="am-u-md-4 blog-sidebar"> 
     <div class="am-panel-group"> 
@@ -157,27 +170,14 @@
   </footer> 
   <script src="assets/js/jquery.min.js"></script> 
   <script src="assets/js/amazeui.min.js"></script> 
-  <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
   <script src="store.js"></script> 
   <script>
       function addHtml_simple(v){
           var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
           return html;
       }
-      function createComment(){
-        var gitment = new Gitment({
-          id: location.href, // 可选。默认为 location.href
-          owner: 'ro1992613',
-          repo: 'https://github.com/ro1992613/gitblog_comment',
-          oauth: {
-            client_id: 'ea18674e6f2820f9fcce',
-            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
-          },
-        });
-        gitment.render('container')
-      }
+
       $(function() {
-          createComment();
           $("#simple-list").html("");
           data.map(function(v,index){
             if(index<=10){
