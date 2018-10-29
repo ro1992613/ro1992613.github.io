@@ -1,0 +1,313 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">练习错误2</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-10-29</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <p>类的初始化过程：</p>
+       <p><span style="background-color: rgb(238, 236, 224); color: rgb(194, 79, 74);">父类静态域——》子类静态域——》父类成员初始化——》父类构造块——》父类构造方法——》子类成员初始化——》子类构造块——》子类构造方法；&nbsp;&nbsp;</span><br></p>
+       <p>作用域 ：&nbsp;<span style="background-color: rgb(238, 236, 224); color: rgb(194, 79, 74);"><br></span></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;如下表：</p>
+       <div>
+        <table border="1" cellspacing="0" cellpadding="0">
+         <tbody>
+          <tr>
+           <td>作用域</td>
+           <td>当前类</td>
+           <td>同包</td>
+           <td>子孙类(不同包)</td>
+           <td>其他包</td>
+          </tr>
+          <tr>
+           <td>public</td>
+           <td>√</td>
+           <td>√</td>
+           <td>√</td>
+           <td>√</td>
+          </tr>
+          <tr>
+           <td>protected</td>
+           <td>√</td>
+           <td>√</td>
+           <td>√</td>
+           <td>×</td>
+          </tr>
+          <tr>
+           <td>default</td>
+           <td>√</td>
+           <td>√</td>
+           <td>×</td>
+           <td>×</td>
+          </tr>
+          <tr>
+           <td>private</td>
+           <td>√</td>
+           <td>×</td>
+           <td>×</td>
+           <td>×</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+       <div>
+        &nbsp;
+       </div>
+       <p>关于抽象类与最终类与接口 ：</p>
+       <p>&nbsp; &nbsp; 最终类<br></p>
+       <p>&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;最终类就是被final修饰的类，最终方法就是被final修饰的方法。最终类不能被继承，最终方法不能被重写。</p>
+       <p>&nbsp; &nbsp; 抽象类&nbsp;</p>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1，抽象类中可以有抽象方法，也可以没有抽象方法。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2，抽象类当然可以被继承，因为它就是用来继承的，
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3，继承抽象类，若有抽象方法，则子类必须将其抽象方法实现，
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4，抽象类中的非抽象方法可以被重写。
+       </div>
+       <table>
+        <tbody>
+         <tr>
+          <td valign="top" width="166"><strong>参数</strong></td>
+          <td valign="top" width="220"><strong>抽象类</strong></td>
+          <td valign="top" width="166"><strong>接口</strong></td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">默认的方法实现</td>
+          <td valign="top" width="220">它可以有默认的方法实现</td>
+          <td valign="top" width="166"><span style="color: rgb(249, 150, 59);">接口完全是抽象的。它根本不存在方法的实现</span></td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">实现</td>
+          <td valign="top" width="220">子类使用<strong>extends</strong>关键字来继承抽象类。如果子类不是抽象类的话，它需要提供抽象类中所有声明的方法的实现。</td>
+          <td valign="top" width="166">子类使用关键字<strong>implements</strong>来实现接口。它需要提供接口中所有声明的方法的实现</td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">构造器</td>
+          <td valign="top" width="220">抽象类可以有构造器</td>
+          <td valign="top" width="166"><span style="color: rgb(249, 150, 59);">接口不能有构造器</span></td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">与正常Java类的区别</td>
+          <td valign="top" width="220">除了你不能实例化抽象类之外，它和普通Java类没有任何区别</td>
+          <td valign="top" width="166">接口是完全不同的类型</td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">访问修饰符</td>
+          <td valign="top" width="220"><span style="color: rgb(194, 79, 74);">抽象方法可以有<strong>public</strong>、<strong>protected</strong>和<strong>default</strong>这些修饰符</span></td>
+          <td valign="top" width="166"><span style="color: rgb(249, 150, 59);">接口方法默认修饰符是<strong>public</strong>。你不可以使用其它修饰符</span>。</td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">main方法</td>
+          <td valign="top" width="220"><span style="color: rgb(194, 79, 74);">抽象方法可以有main方法并且我们可以运行它</span></td>
+          <td valign="top" width="166"><span style="color: rgb(249, 150, 59);">接口没有main方法，因此我们不能运行它。</span></td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">多继承</td>
+          <td valign="top" width="220">抽象方法可以继承一个类和实现多个接口</td>
+          <td valign="top" width="166">接口只可以继承一个或多个其它接口</td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">速度</td>
+          <td valign="top" width="220">它比接口速度要快</td>
+          <td valign="top" width="166"><span style="color: rgb(249, 150, 59);">接口是稍微有点慢的，因为它需要时间去寻找在类中实现的方法。</span></td>
+         </tr>
+         <tr>
+          <td valign="top" width="166">添加新方法</td>
+          <td valign="top" width="220">如果你往抽象类中添加新的方法，你可以给它提供默认的实现。因此你不需要改变你现在的代码。</td>
+          <td valign="top" width="166">如果你往接口中添加方法，那么你必须改变实现该接口的类。</td>
+         </tr>
+        </tbody>
+       </table>
+       <p>&nbsp; &nbsp; 1 .接口只能包含抽象方法，抽象类可以包含普通方法。</p>
+       <br>&nbsp;&nbsp;&nbsp;&nbsp;2. 
+       <span style="background-color: rgb(194, 79, 74);">接口只能定义静态常量属性</span>，抽象类既可以定义普通属性，也可以定义静态常量属性。
+       <div>
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;3 .
+        <span style="color: rgb(249, 150, 59);">接口不包含构造方法，抽象类里可以包含构造方法</span>。
+       </div>
+       <div>
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;4.抽象类不能被实例化，但不代表它不可以有
+        <a href="https://www.baidu.com/s?wd=%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0&amp;tn=SE_PcZhidaonwhc_ngpagmjz&amp;rsv_dl=gh_pc_zhidao" target="_blank">构造函数</a>，抽象类可以有
+        <a href="https://www.baidu.com/s?wd=%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0&amp;tn=SE_PcZhidaonwhc_ngpagmjz&amp;rsv_dl=gh_pc_zhidao" target="_blank">构造函数</a>，备继承类扩充
+       </div>
+       <div>
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;5.接口是核心，其定义了要做的事情，包含了许多的方法，但没有定义这些方法应该如何做。
+       </div>
+       <div>
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;6. 如果许多类实现了某个接口，那么每个都要用代码实现那些方法
+       </div>
+       <div>
+        <br>7.如果某一些类的实现有共通之处，则可以抽象出来一个抽象类，让抽象类实现接口的公用的代码，而那些个性化的方法则由各个子类去实现。
+       </div>
+       <div>
+        <br>所以，抽象类是为了简化接口的实现，他不仅提供了公共方法的实现，让你可以快速开发，又允许你的类完全可以自己实现所有的方法，不会出现紧耦合的问题。
+       </div>
+       <p><br></p>
+       <p><span style="font-weight: bold;">throw和throws的区别</span></p>
+       <p>&nbsp; &nbsp; throw是语句抛出一个异常，一般是在代码块的内部，当程序出现某种逻辑错误时由程序员主动抛出某种特定类型的异常<br></p>
+       <pre><code>public static void main(String[] args) { <br>    String s = "abc"; <br>    if(s.equals("abc")) { <br>      throw new NumberFormatException(); <br>    } else { <br>      System.out.println(s); <br>    } <br>    //function(); <br>}</code></pre>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;throws是方法可能抛出异常的声明。(用在声明方法时，表示该方法可能要抛出异常)</p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;public void function() throws Exception{......}<br></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;当某个方法可能会抛出某种异常时用于throws 声明可能抛出的异常，然后交给上层调用它的方法程序处理&nbsp;&nbsp;<br></p>
+       <p>&nbsp; &nbsp;&nbsp;<span style="background-color: rgb(241, 241, 241);">public class testThrows(){</span><br></p>
+       <pre><code>public static void function() throws NumberFormatException{ <br>String s = "abc"; <br>System.out.println(Double.parseDouble(s)); <br>} <br> <br>public static void main(String[] args) { <br>try { <br>function(); <br>} catch (NumberFormatException e) { <br>System.err.println("非数据类型不能强制类型转换。"); <br>//e.printStackTrace(); <br>} <br>}</code></pre>
+       <p><br></p>
+       <p><br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
