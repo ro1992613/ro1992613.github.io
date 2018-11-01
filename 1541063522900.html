@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">练习错误4</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-11-01</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <div>
+        <span style="font-weight: bold;">关于final关键字和类型转换</span>
+        <br>
+       </div>
+       <div>
+        <br>
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;一、关于final的重要知识点;
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;1、final关键字可以用于成员变量、本地变量、方法以及类。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;2、&nbsp;final成员变量
+        <span style="background-color: rgb(194, 79, 74);">必须在声明的时候初始化或者在构造器中初始化</span>，否则就会报编译错误。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;3、&nbsp;你不能够对final变量再次赋值。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;4、&nbsp;本地变量必须在声明时赋值。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;5、&nbsp;
+        <span style="color: rgb(194, 79, 74);">在匿名类中所有变量都必须是final变量。</span>
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;6、&nbsp;final方法不能被重写。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;7、&nbsp;final类不能被继承。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;8、&nbsp;没有在声明时初始化final变量的称为空白final变量(blank final variable)，它们必须在构造器中初始化，或者调用this()初始化。不这么做的话，编译器会报错“final变量(变量名)需要进行初始化”。
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;二、数据类型转换
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;当使用 +、-、*、/、%、运算操作是，遵循如下规则：
+        <br>
+       </div>
+       <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;只要两个操作数中有一个是double类型的，另一个将会被转换成double类型，并且结果也是double类型，如果两个操作数中有一个是float类型的，另一个将会被转换为float类型，并且结果也是float类型，如果两个操作数中有一个是long类型的，另一个将会被转换成long类型，并且结果也是long类型，否则（操作数为：byte、short、int 、char），两个数都会被转换成int类型，并且结果也是int类型。
+       </div>
+       <p><br></p>
+       <p><span style="font-weight: bold;">java重载，重载只要求参数列表不同，返回值无关；</span></p>
+       <p><span style="font-weight: bold;"><br></span></p>
+       <p><span style="font-weight: bold;">匿名内部类</span></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在使用匿名内部类的过程中，我们需要注意如下几点：</p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;<strong>&nbsp; 1、</strong>使用匿名内部类时，我们<span style="color: rgb(194, 79, 74);">必须是继承一个类或者实现一个接口</span>，但是两者不可兼得，同时也只能继承一个类或者实现一个接口。</p>
+       <p>&nbsp;&nbsp;<span style="color: rgb(194, 79, 74);">&nbsp;&nbsp;&nbsp;<strong>2、</strong>匿名内部类中是不能定义构造函数的。</span></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(249, 150, 59);">&nbsp;<strong>3、</strong>匿名内部类中不能存在任何的静态成员变量和静态方法。</span></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>4、</strong>匿名内部类为局部内部类，所以局部内部类的所有限制同样对匿名内部类生效。</p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color: rgb(249, 150, 59);">&nbsp;<strong>5、</strong>匿名内部类不能是抽象的，它必须要实现继承的类或者实现的接口的所有抽象方法。</span></p>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;我们给匿名内部类传递参数的时候，若该形参在内部类中需要被使用，那么该形参必须要为final。也就是说：<strong>当所在的方法的形参需要被内部类里面使用时，该形参必须为final。</strong>&nbsp;&nbsp;<span style="background-color: rgb(249, 150, 59);"><br></span></p>
+       <p><br></p>
+       <p><span style="font-weight: bold;">short转byte；</span></p>
+       <div>
+        <div>
+         1、Java中用补码形式表示
+        </div>
+        <div>
+         2、第一位正负位，1表示负，0表示正。
+        </div>
+        <div>
+         3、原码：一个数的二进制表示。
+        </div>
+        <div>
+         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;3的原码00000011 &nbsp; -3的&nbsp;原码&nbsp;10000011
+        </div>
+        <div>
+         4、反码：负数原码按位取反（符号位不变）。正数原码本身。
+        </div>
+        <div>
+         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 3的反码00000011 &nbsp; -3的反码11111100
+        </div>
+        <div>
+         5、补码：正数是原码本身。负数反码加1。
+        </div>
+        <div>
+         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;3的补码是00000011 &nbsp;-3的补码是11111101
+        </div>
+        <div>
+         -------------------------------------------------------------------------------
+        </div>
+       </div>
+       <div>
+        int占4个字节，32位
+       </div>
+       <div>
+        byte占1个字节，8位
+       </div>
+       <div>
+        所以强转时会截断。前24位
+       </div>
+       <div>
+        ---------------------------------------------------------------------------
+       </div>
+       <div>
+        在内存中表示形式（
+        <u>&nbsp;<em>注意java中是以补码表示一个数，所以表示形式是补码，不是原码！</em>&nbsp;</u>）：
+       </div>
+       <div>
+        int a = 3 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;00000000&nbsp;&nbsp;00000000&nbsp;&nbsp;00000000 00000011 （强转byte时前面24个0被截断）
+       </div>
+       <div>
+        byte b = 3 &nbsp; &nbsp;&nbsp;&nbsp;00000011
+       </div>
+       <div>
+        int a = -3 &nbsp; &nbsp; &nbsp; 11111111&nbsp;&nbsp;11111111&nbsp;&nbsp;&nbsp;11111111&nbsp;&nbsp;&nbsp;11111101&nbsp;（强转byte时前面24个1被截断）
+       </div>
+       <div>
+        byte b = -3 &nbsp; &nbsp;&nbsp;11111101
+       </div>
+       <div>
+        ----------------------------------------------------------------------------
+       </div>
+       <div>
+        已知负数的补码，求负数：
+       </div>
+       <div>
+        补码-1=反码，反码按位取反=该负数绝对值
+       </div>
+       <div>
+        已知负数，求负数的补码：
+       </div>
+       <div>
+        1、负数原码除了符号位，按位取反（不含符号位），加1。
+       </div>
+       <div>
+        2、负数绝对值的补码（也就是原码），按位取反（含符号位），加1
+       </div>
+       <div>
+        -------------------------------------------------------------------------------
+       </div>
+       <div>
+        例子：
+       </div>
+       <div>
+        java int 128转为byte，值：
+       </div>
+       <div>
+        128为正数，补码为10000000（前面24个0省略），变成byte，只剩下10000000（byte为1个字节），因为开头是1，所以为负数。即1个负数的补码是10000000。反码是01111111，原码是1000000。是128.因为是负数，所以是-128。
+       </div>
+       <p><span style="font-weight: bold;"><br></span></p>
+       <p><span style="font-weight: bold;">Java中类是单继承，但接口可以多继承，Interfere1 extends Interface2,Interface3&nbsp;&nbsp;</span><br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
