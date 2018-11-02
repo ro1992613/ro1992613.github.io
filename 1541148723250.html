@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">关于锁的一些问题和回答</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-11-02</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <p><strong>首先介绍一些乐观锁与悲观锁:</strong></p>
+       <p>　　悲观锁：总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以<span style="color: rgb(249, 150, 59);">每次在拿数据的时候都会上锁</span>，这样别人想拿这个数据就会阻塞直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。再比如Java里面的同步原语synchronized关键字的实现也是悲观锁。</p>
+       <p>　　乐观锁：顾名思义，就是很乐观，<span style="color: rgb(249, 150, 59);">每次去拿数据的时候都认为别人不会修改</span>，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，像数据库提供的类似于write_condition机制，其实都是提供的乐观锁。在Java中java.util.concurrent.atomic包下面的原子变量类就是使用了乐观锁的一种实现方式CAS实现的。</p>
+       <p>&nbsp;</p>
+       <p><strong>乐观锁的一种实现方式-CAS(Compare and Swap 比较并交换)：</strong></p>
+       <p>　　锁存在的问题:</p>
+       <p>　　　　Java在JDK1.5之前都是靠 synchronized关键字保证同步的，这种通过使用一致的锁定协议来协调对共享状态的访问，可以确保无论哪个线程持有共享变量的锁，都采用独占的方式来访问这些变量。这就是一种独占锁，独占锁其实就是一种悲观锁，所以可以说&nbsp;<strong style="color: rgb(249, 150, 59);">synchronized 是悲观锁。</strong></p>
+       <p><strong>　　　　</strong>悲观锁机制存在以下问题：　　</p>
+       <p>　　　　　　<span style="color: rgb(139, 170, 74);">1. 在多线程竞争下，加锁、释放锁会导致比较多的上下文切换和调度延时，引起性能问题。</span></p>
+       <p><span style="color: rgb(139, 170, 74);">　　　　　　2. 一个线程持有锁会导致其它所有需要此锁的线程挂起。</span></p>
+       <p><span style="color: rgb(139, 170, 74);">　　　　　　3. 如果一个优先级高的线程等待一个优先级低的线程释放锁会导致优先级倒置，引起性能风险。</span></p>
+       <p>　　　　对比于悲观锁的这些问题，另一个更加有效的锁就是乐观锁。其实乐观锁就是：<span style="color: rgb(249, 150, 59);">每次不加锁而是假设没有并发冲突而去完成某项操作，如果因为并发冲突失败就重试，直到成功为止。</span></p>
+       <p>　　乐观锁：</p>
+       <p>　　　　乐观锁（ Optimistic Locking ）在上文已经说过了，其实就是一种思想。相对悲观锁而言，乐观锁假设认为数据一般情况下不会产生并发冲突，所以在数据进行提交更新的时候，才会正式对数据是否产生并发冲突进行检测，如果发现并发冲突了，则让返回用户错误的信息，让用户决定如何去做。</p>
+       <p>　　　　上面提到的乐观锁的概念中其实已经阐述了它的具体实现细节：主要就是两个步骤：<strong><span style="color: rgb(194, 79, 74);">冲突检测和数据更新</span>。</strong>其实现方式有一种比较典型的就是 Compare and Swap ( CAS )。</p>
+       <p>　　CAS：</p>
+       <p>　　　　CAS是乐观锁技术，<span style="color: rgb(194, 79, 74);">当多个线程尝试使用CAS同时更新同一个变量时，只有其中一个线程能更新变量的值，而其它线程都失败，失败的线程并不会被挂起，而是被告知这次竞争中失败，并可以再次尝试。　　　</span></p>
+       <p>　　　　CAS 操作中包含三个操作数 —— 需要<span style="color: rgb(139, 170, 74);">读写的内存位置</span>（V）、<span style="color: rgb(139, 170, 74);">进行比较的预期原值</span>（A）和<span style="color: rgb(139, 170, 74);">拟写入的新值</span>(B)。<span style="color: rgb(249, 150, 59);">如果</span>内存位置V的值与预期原值A相<span style="color: rgb(249, 150, 59);">匹配</span>，那么处理器会自动将该位置值<span style="color: rgb(249, 150, 59);">更新为新值B</span>。<span style="color: rgb(249, 150, 59);">否则</span>处理器<span style="color: rgb(249, 150, 59);">不做任何操作</span>。无论哪种情况，它都会在 CAS 指令之前返回该位置的值。（在 CAS 的一些特殊情况下将仅返回 CAS 是否成功，而不提取当前值。）CAS 有效地说明了“&nbsp;我认为位置 V 应该包含值 A；如果包含该值，则将 B 放到这个位置；否则，不要更改该位置，只告诉我这个位置现在的值即可。 ”这其实和乐观锁的冲突检查+数据更新的原理是一样的。</p>
+       <p>　　　　这里再强调一下，乐观锁是一种思想。CAS是这种思想的一种实现方式。</p>
+       <p><strong>Java模拟CAS的实现</strong>&nbsp;&nbsp;<br></p>
+       <pre><code>public class SimulatedCAS {<br> <br>    private int value;<br> <br>    public SimulatedCAS(int value) {<br>        this.value = value;<br>    }<br> <br>    public synchronized int get(){<br>        return value;<br>    }<br> <br>    public synchronized int compareAndSwap(int expectedValue, int newValue){<br>        int oldValue = value;//获取旧值<br>        if(oldValue == expectedValue){//如果期望值与当前V位置的值相同就给予新值<br>            value = newValue;<br>        }<br>        return oldValue;//返回V位置原有的值<br>    }<br> <br>    public synchronized boolean compareAndSet(int expectedValue, int newValue){<br>        return ( expectedValue == compareAndSwap(expectedValue, newValue));<br>    }<br> <br>    public static void main(String[] args) {<br>        SimulatedCAS cas = new SimulatedCAS(10);<br>        cas.compareAndSet(10, 20);<br>        System.out.print(cas.get());<br>    }<br>}</code></pre>
+       <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上面的compareAndSwap函数主要就是一个CAS的操作。当多个线程尝试使用CAS同时更新一个变量时，只有一个线程能够更新成功，其余线程都将失败。但是，失败的线程并不会被挂起(这个地方就是与获取锁的不同之处，当获取锁失败时，线程会被挂起)，而是被告知在这次竞争中失败，并可以再次尝试。（这里可以决定是否再次尝试或执行恢复操作或不执行任何操作）&nbsp;&nbsp;<br></p>
+       <p><strong>非阻塞的计数器案例</strong>&nbsp;</p>
+       <pre><code>public class CasCounter {<br> <br>    private SimulatedCAS value;<br> <br>    public int getValue(){<br>        return value.get();<br>    }<br> <br>    public int increment() {<br>        int v;<br>        do{<br>            v = value.get();//期望值<br>        }<br>        while( v!= value.compareAndSwap(v, v+1));//如果原值与期望值不同,就一直执行.<br>        return v+1;<br>    }<br>}</code></pre>
+       <p><br></p>
+       <p>&nbsp;<br></p>
+       <div>
+        <div>
+         <h2>CAS缺点</h2> 
+         <ol> 
+          <li>ABA问题。因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A-B-A 就会变成1A-2B-3A。<br> 从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。</li> 
+          <li>循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。</li>
+         </ol>
+        </div>
+        <br>
+       </div>
+       <p><span style="font-weight: bold;">互斥同步</span><br>&nbsp;互斥同步（Mutual Exclusion＆Synchronization）是常见的一种并发正确性保障手段。同步<br>是指在多个线程并发访问共享数据时，保证共享数据在同一个时刻只被一个（或者是一些，<br>使用信号量的时候）线程使用。而互斥是实现同步的一种手段，临界区（Critical<br>Section）、互斥量（Mutex）和信号量（Semaphore）都是主要的互斥实现方式。因此，在这<br>4个字里面，互斥是因，同步是果；互斥是方法，同步是目的。<br>在Java中，最基本的<span style="color: rgb(194, 79, 74);">互斥同步手段就是synchronized关键字</span>，synchronized关键字经过编译<br>之后，会在同步块的前后分别形成monitorenter和monitorexit这两个字节码指令，这两个字节<br>码都需要一个reference类型的参数来指明要锁定和解锁的对象。如果Java程序中的<br>synchronized明确指定了对象参数，那就是这个对象的reference；如果没有明确指定，那就根<br>据synchronized修饰的是实例方法还是类方法，去取对应的对象实例或Class对象来作为锁对<br>象。<br>除了synchronized之外，我们还可以使用<span style="color: rgb(249, 150, 59);">java.util.concurrent（下文称J.U.C）包中的重入锁<br>（ReentrantLock）来实现同步</span>，在基本用法上，ReentrantLock与synchronized很相似，他们都<br>具备一样的线程重入特性，只是代码写法上有点区别，一个表现为API层面的互斥锁<br>（lock（）和unlock（）方法配合try/finally语句块来完成），另一个表现为原生语法层面的互<br>斥锁。不过，相比synchronized,ReentrantLock增加了一些高级功能，主要有以下3项：等待可<br>中断、可实现公平锁，以及锁可以绑定多个条件。</p>
+       <p><br><span style="font-weight: bold;">等待可中断</span></p>
+       <p>是指当持有锁的线程<span style="color: rgb(194, 79, 74);">长期不释放锁</span>的时候，正在等待的线程可以选择<span style="color: rgb(194, 79, 74);">放弃等<br>待</span>，<span style="color: rgb(194, 79, 74);">改为处理其他事情</span>，可中断特性对处理执行时间非常长的同步块很有帮助。</p>
+       <p><br><span style="font-weight: bold;">公平锁</span></p>
+       <p>是指多个线程在等待同一个锁时，必须按照<span style="color: rgb(194, 79, 74);">申请锁的时间顺序来依次获得锁</span>；而<br>非公平锁则不保证这一点，在锁被释放时，任何一个等待锁的线程都有机会获得锁。<br><span style="color: rgb(194, 79, 74);">synchronized中的锁是非公平的</span>，<span style="color: rgb(194, 79, 74);">ReentrantLock默认情况下也是非公平的</span>，但可以通过带布尔<br>值的构造函数要求使用公平锁。</p>
+       <p><br><span style="font-weight: bold;">锁绑定多个条件</span></p>
+       <p>是指一个ReentrantLock对象可以同时绑定多个Condition对象，而在<br>synchronized中，锁对象的wait（）和notify（）或notifyAll（）方法可以实现一个隐含的条<br>件，如果要和多于一个的条件关联的时候，就不得不额外地添加一个锁，而ReentrantLock则<br>无须这样做，只需要多次调用newCondition（）方法即可。<br><br><span style="font-weight: bold;">非阻塞同步</span><br><span style="color: rgb(194, 79, 74);">互斥同步</span>最主要的问题就是进行线程<span style="color: rgb(194, 79, 74);">阻塞和唤醒所带来的性能问题</span>，因此这种同步也称<br>为阻塞同步（Blocking Synchronization）。</p>
+       <p>从处理问题的方式上说，互斥同步属于一种悲观的<br>并发策略，总是认为只要不去做正确的同步措施（例如加锁），那就肯定会出现问题，无论<br>共享数据是否真的会出现竞争，它都要进行加锁（这里讨论的是概念模型，实际上虚拟机会<br>优化掉很大一部分不必要的加锁）、用户态核心态转换、维护锁计数器和检查是否有被阻塞<br>的线程需要唤醒等操作。</p>
+       <p>随着硬件指令集的发展，我们有了另外一个选择：<span style="color: rgb(249, 150, 59);">基于冲突检测的<br>乐观并发策略，</span>通俗地说，就是先进行操作，如果没有其他线程争用共享数据，那操作就成<br>功了；如果共享数据有争用，产生了冲突，那就再采取其他的补偿措施（最常见的补偿措施<br>就是不断地重试，直到成功为止），这种乐观的并发策略的许多实现都不需要把线程挂起，<br>因此这种同步操作称为<span style="color: rgb(249, 150, 59);">非阻塞同步</span>（Non-Blocking Synchronization）。<br>为什么笔者说使用乐观并发策略需要“硬件指令集的发展”才能进行呢？因为我们需要操<br>作和冲突检测这两个步骤具备原子性，靠什么来保证呢？如果这里再使用互斥同步来保证就<br>失去意义了，所以我们只能靠硬件来完成这件事情，硬件保证一个从语义上看起来需要多次<br>操作的行为只通过一条处理器指令就能完成，</p>
+       <p>这类指令常用的有：<br>测试并设置（Test-and-Set）。<br>获取并增加（Fetch-and-Increment）。<br>交换（Swap）。<br>比较并交换（Compare-and-Swap，下文称CAS）。<br>加载链接/条件存储（Load-Linked/Store-Conditional，下文称LL/SC）。</p>
+       <p><br></p>
+       <p><strong>锁优化</strong><br>高效并发是从JDK 1.5到JDK 1.6的一个重要改进，HotSpot虚拟机开发团队在这个版本上<br>花费了大量的精力去实现各种锁优化技术，如适应性自旋（Adaptive &nbsp;Spinning）、锁消除<br>（Lock Elimination）、锁粗化（Lock Coarsening）、轻量级锁（Lightweight Locking）和偏向<br>锁（Biased Locking）等，这些技术都是为了在线程之间更高效地共享数据，以及解决竞争问<br>题，从而提高程序的执行效率。&nbsp;&nbsp;<br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>

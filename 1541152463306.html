@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">用AtomicStampedReference解决ABA问题-转</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-11-02</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <p>在运用CAS做Lock-Free操作中有一个经典的ABA问题：</p>
+       <p>线程1准备用CAS将变量的值由A替换为B，在此之前，线程2将变量的值由A替换为C，又由C替换为A，然后线程1执行CAS时发现变量的值仍然为A，所以CAS成功。但实际上这时的现场已经和最初不同了，尽管CAS成功，但可能存在潜藏的问题，例如下面的例子：</p>
+       <p><a href="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-1.png"><img title="ABA-1" alt="" src="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-1.png" width="149" height="173"></a></p>
+       <p><span id="more-859"></span>现有一个用单向链表实现的堆栈，栈顶为A，这时线程T1已经知道A.next为B，然后希望用CAS将栈顶替换为B：</p>
+       <p>head.compareAndSet(A,B);</p>
+       <p>在T1执行上面这条指令之前，线程T2介入，将A、B出栈，再pushD、C、A，此时堆栈结构如下图，而对象B此时处于游离状态：</p>
+       <p><a href="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-2.png"><img title="ABA-2" alt="" src="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-2.png" width="149" height="256"></a></p>
+       <p>此时轮到线程T1执行CAS操作，检测发现栈顶仍为A，所以CAS成功，栈顶变为B，但实际上B.next为null，所以此时的情况变为：</p>
+       <p><a href="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-3.png"><img title="ABA-3" alt="" src="http://blog.hesey.net/wp-content/uploads/2011/09/ABA-3.png" width="342" height="222"></a></p>
+       <p>其中堆栈中只有B一个元素，C和D组成的链表不再存在于堆栈中，平白无故就把C、D丢掉了。</p>
+       <p>以上就是由于ABA问题带来的隐患，各种乐观锁的实现中通常都会用版本戳version来对记录或对象标记，避免并发操作带来的问题，在Java中，AtomicStampedReference&lt;E&gt;也实现了这个作用，它通过包装[E,Integer]的元组来对对象标记版本戳stamp，从而避免ABA问题，例如下面的代码分别用AtomicInteger和AtomicStampedReference来对初始值为100的原子整型变量进行更新，AtomicInteger会成功执行CAS操作，而加上版本戳的AtomicStampedReference对于ABA问题会执行CAS失败：</p>
+       <pre>import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicStampedReference;
+
+public class ABA {
+&nbsp; &nbsp; &nbsp; &nbsp; private static AtomicInteger atomicInt = new AtomicInteger(100);
+&nbsp; &nbsp; &nbsp; &nbsp; private static AtomicStampedReference atomicStampedRef = new AtomicStampedReference(100, 0);
+
+&nbsp; &nbsp; &nbsp; &nbsp; public static void main(String[] args) throws InterruptedException {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Thread intT1 = new Thread(new Runnable() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @Override
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public void run() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; atomicInt.compareAndSet(100, 101);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; atomicInt.compareAndSet(101, 100);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Thread intT2 = new Thread(new Runnable() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @Override
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public void run() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TimeUnit.SECONDS.sleep(1);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (InterruptedException e) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; boolean c3 = atomicInt.compareAndSet(100, 101);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; System.out.println(c3); // true
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; intT1.start();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; intT2.start();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; intT1.join();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; intT2.join();
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Thread refT1 = new Thread(new Runnable() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @Override
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public void run() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TimeUnit.SECONDS.sleep(1);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (InterruptedException e) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; atomicStampedRef.compareAndSet(100, 101, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; atomicStampedRef.compareAndSet(101, 100, atomicStampedRef.getStamp(), atomicStampedRef.getStamp() + 1);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Thread refT2 = new Thread(new Runnable() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; @Override
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public void run() {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int stamp = atomicStampedRef.getStamp();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TimeUnit.SECONDS.sleep(2);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; } catch (InterruptedException e) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; boolean c3 = atomicStampedRef.compareAndSet(100, 101, stamp, stamp + 1);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; System.out.println(c3); // false
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; refT1.start();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; refT2.start();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+}</pre>
+       <div>
+        <br>
+       </div>
+       <div>
+        转载：
+        <a href="http://blog.hesey.net/2011/09/resolve-aba-by-atomicstampedreference.html">http://blog.hesey.net/2011/09/resolve-aba-by-atomicstampedreference.html</a>
+       </div>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
