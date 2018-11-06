@@ -1,0 +1,481 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">类、方法、成员变量和局部变量的可用修饰符</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-11-05</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <div>
+        <p>1、<span style="color: rgb(194, 79, 74);">抽象类中的抽象方法（其前有abstract修饰）不能用private、static、synchronized、native访问修饰符修饰</span>。原因如下：<span style="color: rgb(249, 150, 59);">抽象方法没有方法体，是用来被继承的，所以不能用private修饰</span>；<span style="color: rgb(249, 150, 59);">static修饰的方法可以通过类名来访问该方法（即该方法的方法体），抽象方法用static修饰没有意义</span>；使用synchronized关键字是为该方法加一个锁。。而如果该关键字修饰的方法是static方法。则使用的锁就是class变量的锁。如果是修饰类方法。则用this变量锁。但是<span style="font-weight: bold; color: rgb(249, 150, 59);">抽象类不能实例化对象</span>，因为该方法不是在该抽象类中实现的。是在其子类实现的。所以。锁应该归其子类所有。所以。抽象方法也就不能用synchronized关键字修饰了；native，这个东西本身就和abstract冲突，他们都是方法的声明，只是一个吧方法实现移交给子类，另一个是移交给本地操作系统。如果同时出现，就相当于即把实现移交给子类，又把实现移交给本地操作系统，那到底谁来实现具体方法呢？</p>
+        <br>
+        <br>
+        <p>2、<span style="color: rgb(249, 150, 59);">接口是一种特殊的抽象类</span>，<span style="color: rgb(249, 150, 59);">接口中的方法全部是抽象方法</span>（但其前的abstract可以省略），所以抽象类中的抽象方法不能用的访问修饰符这里也不能用。而且protected访问修饰符也不能使用，因为接口可以让所有的类去实现（非继承），不只是其子类，但是要用public去修饰。接口可以去继承一个已有的接口。</p>
+        <p><br></p>
+        <p>题考察修饰符，函数定义等，故从网上搜罗了下相关资料，总结如下：</p>
+        <p>&nbsp;</p>
+        <p>类、方法、成员变量和局部变量的可用修饰符</p>
+        <table border="0" cellpadding="0">
+         <tbody>
+          <tr>
+           <td width="171"><p align="left"><strong>修饰符</strong></p></td>
+           <td colspan="2" width="93"><p align="left"><strong>类</strong></p></td>
+           <td><p align="left"><strong>成员访求</strong></p></td>
+           <td><p align="left"><strong>构造方法</strong></p></td>
+           <td><p align="left"><strong>成员变量</strong></p></td>
+           <td><p align="left"><strong>局部变量</strong></p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">abstract（抽象的）</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">static （静态的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">public（公共的）</p></td>
+           <td width="18"><p align="left">√</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left"><span style="font-weight: bold; color: rgb(249, 150, 59);">√</span></p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">protected（受保护的）</p></td>
+           <td>&nbsp;</td>
+           <td><p align="left">√</p></td>
+           <td><p align="left"><span style="font-weight: bold; color: rgb(194, 79, 74);">√</span></p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">private（私有的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left"><span style="color: rgb(194, 79, 74);">√</span></p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">synchronized（同步的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">native（本地的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">transient（暂时的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">volatie（易失的）</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+          </tr>
+          <tr>
+           <td colspan="2"><p align="left">final（不要改变的）</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">－</p></td>
+           <td><p align="left">√</p></td>
+           <td><p align="left">√</p></td>
+          </tr>
+          <tr>
+           <td width="174">&nbsp;</td>
+           <td width="2">&nbsp;</td>
+           <td width="93">&nbsp;</td>
+           <td width="92">&nbsp;</td>
+           <td width="92">&nbsp;</td>
+           <td width="92">&nbsp;</td>
+           <td width="93">&nbsp;</td>
+          </tr>
+         </tbody>
+        </table>
+        <p>&nbsp;</p>
+        <table border="1" cellpadding="0" cellspacing="0">
+         <tbody>
+          <tr>
+           <td colspan="2" valign="top"><p align="center"><strong>类&nbsp;修饰符</strong>&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Public</p></td>
+           <td valign="top"><p align="center">可以从其他类中访问</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Abstract</p></td>
+           <td valign="top"><p align="center"><span style="background-color: rgb(238, 236, 224); color: rgb(249, 150, 59);">本类不能被实例化</span></p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Final</p></td>
+           <td valign="top"><p align="center">不能再声明子类</p></td>
+          </tr>
+          <tr>
+           <td colspan="2" valign="top"><p align="center"><strong>构造函数修饰符</strong>&nbsp;&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Public</p></td>
+           <td valign="top"><p align="center">可以从所有的类中访问</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Protected</p></td>
+           <td valign="top"><p align="center">只能从自己的类和它的子类中访问</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Private</p></td>
+           <td valign="top"><p align="center">只能在本类中访问</p></td>
+          </tr>
+          <tr>
+           <td colspan="2" valign="top"><p align="center"><strong>域/成员变量修饰符</strong>&nbsp;&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Public</p></td>
+           <td valign="top"><p align="center">可以从所有的类中访问</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Protected</p></td>
+           <td valign="top"><p align="center">只能从本类和它的子类中访问</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Private</p></td>
+           <td valign="top"><p align="center">只能从本类中访问它</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Static</p></td>
+           <td valign="top"><p align="center">对该类的所有实例只能有一个域值存在</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">transient</p></td>
+           <td valign="top"><p align="center">不是一个对象持久状态的一部份</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Volatile</p></td>
+           <td valign="top"><p align="center">可以被异步的线程所修改</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">final</p></td>
+           <td valign="top"><p align="center">必须对它赋予初值并且不能修改它</p></td>
+          </tr>
+          <tr>
+           <td colspan="2" valign="top"><p align="center"><strong>局部变量&nbsp;修饰符</strong>&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">final</p></td>
+           <td valign="top"><p align="center">必须对它赋予初值并且不能修改它</p></td>
+          </tr>
+          <tr>
+           <td colspan="2" valign="top"><p align="center"><strong>方法修饰符</strong>&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Public</p></td>
+           <td valign="top"><p align="center">可以从所有的类中访问它</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Protected</p></td>
+           <td valign="top"><p align="center">只能从本类及其子类中访问它</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">Private</p></td>
+           <td valign="top"><p align="center">只能从本类中访问它</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">abstract</p></td>
+           <td valign="top"><p align="center">没有方法体，属于一个抽象类</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">final</p></td>
+           <td valign="top"><p align="center">子类不能覆盖它</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">static</p></td>
+           <td valign="top"><p align="center">被绑定于类本身而不是类的实例</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">native</p></td>
+           <td valign="top"><p align="center">该方法由其他编程语言实现</p></td>
+          </tr>
+          <tr>
+           <td valign="top"><p align="center">asnchronized</p></td>
+           <td valign="top"><p align="center">在一个线程调用它之前必须先给它加</p></td>
+          </tr>
+         </tbody>
+        </table>
+        <p align="center"><strong>类的修饰符整合</strong></p>
+        <p align="left"><strong>一．类</strong></p>
+        <p align="left"><strong>类的修饰符：</strong></p>
+        <p align="left"><strong>Public</strong>:可以在其他任何类中使用，默认为统一包下的任意类。</p>
+        <p align="left"><strong>Abstract:抽象类</strong>，不能被实例化，可以包含抽象方法，抽象方法没有被实现，无具体功能，只能衍生子类。</p>
+        <p align="left"><strong>Final</strong>:不能被继承。</p>
+        <p align="left"><strong>二．变量</strong></p>
+        <p align="left">变量修饰符：</p>
+        <p align="left">一个类的成员变量的声明必须在类体中，而不能在方法中，方法中声明的是<strong>局部变量</strong>。</p>
+        <p align="left">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 可访问修饰符：</p>
+        <p align="left">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>static</strong>：<strong>类变量</strong>：一个类所拥有的变量，不是类的每个实例有的变量。类变量是指不管类创建了多少对象，系统仅在第一次调用类的时候为类变量分配内存，所有对象共享该类的类变量，因此可以通过类本身或者某个对象来访问类变量。</p>
+        <p align="left">3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>final</strong>：<strong>常量</strong>。</p>
+        <p align="left">4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>volatile</strong>：声明一个可能同时被并存运行的几个线程所控制和修改的变量。</p>
+        <p align="left"><strong>实例变量</strong>：和类变量对应，即每个对象都拥有各自独立的实例变量。</p>
+        <p align="left"><strong>三．方法：</strong>（和变量对象分为实例方法和类方法，并用有无static修饰区别）</p>
+        <p align="left"><strong>类方法</strong>：使用static关键字说明的方法</p>
+        <p align="left">1.第一次调用含类方法的类是，系统只为该类创建一个版本，这个版本被该类和该类的所有实例共享。</p>
+        <p align="left">2.类方法只能操作类变量，不能访问实例变量。类方法可以在类中被调用，不必创建实例来调用，当然也可以通过对象来调用。</p>
+        <p align="left"><strong>实例方法</strong>：实例方法可以对当前对象的实例变量操作，而且可以访问类变量。</p>
+        <p align="left">方法可以<strong>重载</strong>，要求：方法名相同，但是参数必须有区别。（参数不同可以使类型不同，顺序不同，个数不同）</p>
+        <p align="left">方法的返回类型：若无返回类型，则声明为void.</p>
+        <p align="left">方法中的变量作用域：</p>
+        <p align="left">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 成员变量：整个类。</p>
+        <p align="left">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 局部变量：定义起到方法块结束为止。</p>
+        <p align="left">3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 方法参数：整个方法或者构造方法。</p>
+        <p align="left">4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 异常处理参数：参数传递给异常处理方法。</p>
+        <p align="left"><strong>构造方法</strong>：和类同名的方法。为新建对象开辟内存空间后，用于初始化新建的对象。不能用对象显式的调用。</p>
+        <p align="left"><strong>静态初始化器</strong>：格式：static{&lt;赋值语句组&gt;}</p>
+        <p align="left">静态初始化器与构造方法的区别：&nbsp;</p>
+        <table border="1" cellpadding="0" cellspacing="0">
+         <tbody>
+          <tr>
+           <td valign="top" width="284"><p align="left">静态初始化器</p></td>
+           <td valign="top" width="284"><p align="left">构造方法</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="284"><p align="left">对类的静态域初始化</p></td>
+           <td valign="top" width="284"><p align="left">对新建的对象初始化</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="284"><p align="left">类进入内存后，系统调用执行</p></td>
+           <td valign="top" width="284"><p align="left">执行new后自动执行</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="284"><p align="left">属特殊语句（仅执行一次）</p></td>
+           <td valign="top" width="284"><p align="left">属特殊方法</p></td>
+          </tr>
+         </tbody>
+        </table>
+        <p align="left"><strong>方法的修饰符：</strong></p>
+        <p align="left"><strong>抽象方法：</strong>用abstract修饰，只有声明部分，方法体为空，具体在子类中完成。</p>
+        <p align="left"><strong>类方法：</strong>静态方法，用static修饰，</p>
+        <p align="left">1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 调用时，使用类名作为前缀，而不是类的某个实例对象名</p>
+        <p align="left">2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不能被单独对象拥有，属于整个类共享。</p>
+        <p align="left">3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 不能处理成员变量。</p>
+        <p align="left"><strong>最终方法</strong>：用final修饰，不能被子类重新定义的方法。</p>
+        <p align="left"><strong>本地方法</strong>：用native修饰的方法，表示用其他语言书写的特殊方法，包括C，C++，FORTRAN，汇编语言等。</p>
+        <p align="left"><strong>四．类成员的访问控制符</strong>：</p>
+        <p align="left">即类的方法和成员变量的访问控制符，一个类作为整体对象不可见，并不代表他的所有域和方法也对程序其他部分不可见，需要有他们的访问修饰符判断。</p>
+        <p align="left">权限如下：&nbsp;</p>
+        <table border="1" cellpadding="0" cellspacing="0">
+         <tbody>
+          <tr>
+           <td valign="top" width="114"><p align="left">访问修饰符</p></td>
+           <td valign="top" width="114"><p align="left">同一个类</p></td>
+           <td valign="top" width="114"><p align="left">同包</p></td>
+           <td valign="top" width="114"><p align="left">不同包，子类</p></td>
+           <td valign="top" width="114"><p align="left">不同包，非子类</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="114"><p align="left">private</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="114"><p align="left">protected</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="114"><p align="left">public</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+          </tr>
+          <tr>
+           <td valign="top" width="114"><p align="left">默认</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">√</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p></td>
+           <td valign="top" width="114"><p align="left">&nbsp;</p>
+            <div>
+             <br>
+            </div></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
