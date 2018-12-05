@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">shiro 集合springboot（1）</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-12-04</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <pre><code>@Configuration<br>public class ShiroConfig {<br><br>    @Bean("sessionManager")<br>    public SessionManager sessionManager(){<br>        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();<br>        sessionManager.setSessionValidationSchedulerEnabled(true);<br>        sessionManager.setSessionIdCookieEnabled(true);<br>        return sessionManager;<br>    }<br><br>    @Bean("securityManager")<br>    public SecurityManager securityManager(OAuth2Realm oAuth2Realm, SessionManager sessionManager) {<br>        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();<br>        securityManager.setRealm(oAuth2Realm);<br>        securityManager.setSessionManager(sessionManager);<br><br>        return securityManager;<br>    }<br><br>    @Bean("shiroFilter")<br>    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {<br>        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();<br>        shiroFilter.setSecurityManager(securityManager);<br><br>        //oauth过滤<br>        Map&lt;String, Filter&gt; filters = new HashMap&lt;&gt;();<br>        filters.put("oauth2", new OAuth2Filter());<br>        shiroFilter.setFilters(filters);<br><br>        Map&lt;String, String&gt; filterMap = new LinkedHashMap&lt;&gt;();<br>        filterMap.put("/webjars/**", "anon");<br>        filterMap.put("/druid/**", "anon");<br>        filterMap.put("/app/**", "anon");<br>        filterMap.put("/sys/login", "anon");<br>        filterMap.put("/swagger/**", "anon");<br>        filterMap.put("/v2/api-docs", "anon");<br>        filterMap.put("/swagger-ui.html", "anon");<br>        filterMap.put("/swagger-resources/**", "anon");<br>        filterMap.put("/captcha.jpg", "anon");<br>        filterMap.put("/**", "oauth2");<br>        shiroFilter.setFilterChainDefinitionMap(filterMap);<br><br>        return shiroFilter;<br>    }<br><br>    @Bean("lifecycleBeanPostProcessor")<br>    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {<br>        return new LifecycleBeanPostProcessor();<br>    }<br><br>    @Bean<br>    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {<br>        DefaultAdvisorAutoProxyCreator proxyCreator = new DefaultAdvisorAutoProxyCreator();<br>        proxyCreator.setProxyTargetClass(true);<br>        return proxyCreator;<br>    }<br><br>    @Bean<br>    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {<br>        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();<br>        advisor.setSecurityManager(securityManager);<br>        return advisor;<br>    }<br><br>}</code></pre>
+       <p>这是主配置bean</p>
+       <p>大概关系是这样的</p>
+       <p><img src="data:image/png;base64,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7JDL5VJ2dra++eabBvsBAEDbo2i1ocrKSn300UdKTU3V559/rkOHDp3V+JMnT+r48eNnfd17771XkydPVu/evRUSEqJ7771XhYWFqq2tbXDslVdeqQcffFD//ve/G90PAADaDkWrFaqrq7V06VKNHz9eMTExGjdunFasWNGgqLz77rsaPHiwYmNj9bvf/c5nVauxx2x12+pWsJKTkyVJsbGxMk3T59yffPKJkpKSNHz4cCUkJKiwsNC7z+Hw/TS63W5ddtllDbbXOXXqlC6++GLv/qqqKmVmZiouLk433XSTZs2ape+//957/J49e5SUlKSYmBhNmDBB+fn5Dc5Z97Hk5eVp9OjRuuOOO7Rnzx69+eabiouL06hRo/TRRx81eY8BAOiMutsdoCPIyMjQwYMHtXDhQkVEROjgwYNKTU1VTU2NHnroIe9xeXl5uvPOOyVJd955pxYtWqTHHntM3bu37javWrVKycnJys/PV0BAgM++t956Sy+88IIuuugiPf3000pPT9fatWsbnKOmpkZvvvmm7rnnngb7LMvS0aNHtXTpUk2ZMsW7PT09XcXFxcrOzlZgYKBmzpyp559/XmlpaZJ+KmazZ89WZGSksrKyNG/ePOXm5jb6MXz++efasGGD5s+fr6eeekpxcXHatGmTFi1apIULF2rEiBGtuhdtxel0/p8LesGzc63dAQAA/kXRasGJEye0ceNGvfrqq4qKipIkDRs2TNOnT1dWVpa3aB09elSHDh3SCy+8IEkaOXKk5s2bp507d+rWW2897xwpKSnq27evJGnKlCl69NFHVVtb22DVat68eXI4HLr//vt9tt98882Sflr9evLJJxUfHy9Jqqio0ObNm7V69WqFhYVJku677z7NnDnTW7Ti4uJ05swZHT16VL169VJJSYlqamoazfnHP/5RQUFBGjdunDZu3Kjk5GQFBQXpjjvu0Lp16+TxeNStW7fzvh9n4bYLebFzUVtbW2l3BgCAf1C0WlBaWirLshQREeGzfeDAgXK73d6yk5ubK8uyfFaSfvzxR+Xl5bVJ0erTp4/3dc+ePWVZlmpqanxWvhYtWqR9+/bplVdeabAitmPHDp06dUr/+Mc/tG7dOk2cOFEBAQEqKyuTZVk+K1x1qqur1aNHD2VlZSk3N1fDhg1TYGCgJDX5/q5LL71UkhQUFCRJCg0NlSTvuAtdtCzLGnXBLnYOunXrVrZ3796v7M4BAPAPilYL6grOsWPHNHToUO/24uJihYWFyeFwyOPx6N1339Xjjz+uW265xXvMJ598orS0NFVUVHiLz5kzZ7wlpP77oM7Xiy++qJ07d2r58uUKCQlp8mOZN2+eEhIS9NJLLyklJcV77KZNm9SvX78GY4qLi7Vq1Sq9/fbbioiIUH5+vrZs2dJmuf1t37597fnRIQCgk+PN8C0IDQ3VbbfdpoyMDB05ckQej0cHDhzQsmXLNHXqVEnSv/71L508eVLjx4/XlVde6f0zatQoBQcH691331V4eLiCgoK0ceNGST+tdr3++us+1+rdu7ckaf/+/aqsbP3TpJdfflkffvihVqxY4V1BakpwcLBmzZqlN954Q0VFRQoLC5PT6dSCBQtUXl4uj8ejw4cPa8+ePZLkfURYWlqqyspKrVmzptW5AADo6iharTBnzhyZpqlHHnlEsbGxeuaZZ5ScnKzExERJP70JPiYmRsHBwT7junXrpttvv115eXkKDAxURkaG3nnnHU2cOFEPP/ywbrjhBp/jBw0apEmTJiklJaXRN7M3Zfny5friiy80atQon19O2tTv4xoxYoTuuOMOzZkzRx6PR/Pnz5fD4VB8fLxuvPFG/f3vf5dlWZKk8PBwJSYm6oknntDUqVMbZAYAAE0z7A5wPpxOpyVJLpfL7ihoRzZs2KC5c+fKMIxXXS7XA3bnAQB0XaxoAQAA+AlFCwAAwE8oWgAAAH5C0QIAAPATihYAAICfULQAAAD8hKIFAADgJxQtAAAAP6FoAQAA+AlFCwAAwE8oWgAAAH5C0QIAAPATihYAAICfULQAAAD8pKMXrTOSVFVVZXcOtCP15sNpO3MAANDRi1aRJJWWltqdA+1IeXl53csiO3MAANDRi9Z2SVq5cqWqq6ttjoL2oKSkRDk5OZYkyzCMHXbnAQB0bYbdAc6HaZqXSPrMsqx+ISEhGjx4sIKDg+2OBRt4PB653W4dOnRINTU1krS4oKDgMbtzAQC6tg5dtCTJNM2BlmVlSZpodxa0C6cMw0gLDg5evH379hq7wwAAurYOX7TqmKZ5icfjGdKtW7e+dmfBhWdZlscwjCPBwcGfU7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3D/wfb2wTzTYvrjwAAAABJRU5ErkJggg==" style="max-width: 100%;"></p>
+       <p>现在我一个个详细解析下</p>
+       <p><span style="font-weight: bold; color: rgb(194, 79, 74);">sessionManager </span>：这个sessionmanager继承自DefaultWebSessionManager，我们也可以根据DefaultWebSessionManager重新定义session的管理规则（<a href="https://blog.csdn.net/u011456867/article/details/80484559" target="_blank">自定义sessionManager</a>） ；</p>
+       <p><span style="background-color: rgb(238, 236, 224);">作用是：默认的web应用Session管理器，主要是涉及到Session和Cookie，具备了SessionIdCookie、SessionIdCookie启用开关，涉及到的行为：添加、删除SessionId到Cookie、读取Cookie获得SessionId</span></p>
+       <p>DefaultWebSessionManager&nbsp;的构造器：&nbsp;<br></p>
+       <pre><code>public DefaultWebSessionManager() {<br>        Cookie cookie = new SimpleCookie(ShiroHttpSession.DEFAULT_SESSION_ID_NAME);<br>        cookie.setHttpOnly(true); //more secure, protects against XSS attacks<br>        this.sessionIdCookie = cookie;<br>        this.sessionIdCookieEnabled = true;<br>        this.sessionIdUrlRewritingEnabled = true;<br>    }</code></pre>
+       <p>oAuth2Realm：自定义的域，权限验证和授权用，这里贴出代码</p>
+       <pre><code>@Component<br>public class OAuth2Realm extends AuthorizingRealm {<br>    @Autowired<br>    private ShiroService shiroService;<br><br>    @Override<br>    public boolean supports(AuthenticationToken token) {<br>        return token instanceof OAuth2Token;<br>    }<br><br>    /**<br>     * 授权(验证权限时调用)<br>     */<br>    @Override<br>    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {<br>        SysUserEntity user = (SysUserEntity)principals.getPrimaryPrincipal();<br>        Long userId = user.getUserId();<br><br>        //用户权限列表<br>        Set&lt;String&gt; permsSet = shiroService.getUserPermissions(userId);<br><br>        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();<br>        info.setStringPermissions(permsSet);<br>        return info;<br>    }<br><br>    /**<br>     * 认证(登录时调用)<br>     */<br>    @Override<br>    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {<br>        String accessToken = (String) token.getPrincipal();<br><br>        //根据accessToken，查询用户信息<br>        SysUserTokenEntity tokenEntity = shiroService.queryByToken(accessToken);<br>        //token失效<br>        if(tokenEntity == null || tokenEntity.getExpireTime().getTime() &lt; System.currentTimeMillis()){<br>            throw new IncorrectCredentialsException("token失效，请重新登录");<br>        }<br><br>        //查询用户信息<br>        SysUserEntity user = shiroService.queryUser(tokenEntity.getUserId());<br>        //账号锁定<br>        if(user.getStatus() == 0){<br>            throw new LockedAccountException("账号已被锁定,请联系管理员");<br>        }<br><br>        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, accessToken, getName());<br>        return info;<br>    }<br>}</code></pre>
+       <p><br></p>
+       <p>securityManager&nbsp; ，这里设置了realm和sessionmanager<br></p>
+       <pre><code>@Bean("securityManager")<br>    public SecurityManager securityManager(OAuth2Realm oAuth2Realm, SessionManager sessionManager) {<br>        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();<br>        securityManager.setRealm(oAuth2Realm);<br>        securityManager.setSessionManager(sessionManager);<br><br>        return securityManager;<br>    }</code></pre>
+       <p><br></p>
+       <p>然后是filter，基础拦截规则，这里加上了oauthfilter的规则</p>
+       <p>shiroFilter：</p>
+       <pre><code>@Bean("shiroFilter")<br>    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {<br>        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();<br>        shiroFilter.setSecurityManager(securityManager);<br><br>        //oauth过滤<br>        Map&lt;String, Filter&gt; filters = new HashMap&lt;&gt;();<br>        filters.put("oauth2", new OAuth2Filter());<br>        shiroFilter.setFilters(filters);<br><br>        Map&lt;String, String&gt; filterMap = new LinkedHashMap&lt;&gt;();<br>        filterMap.put("/webjars/**", "anon");<br>        filterMap.put("/druid/**", "anon");<br>        filterMap.put("/app/**", "anon");<br>        filterMap.put("/sys/login", "anon");<br>        filterMap.put("/swagger/**", "anon");<br>        filterMap.put("/v2/api-docs", "anon");<br>        filterMap.put("/swagger-ui.html", "anon");<br>        filterMap.put("/swagger-resources/**", "anon");<br>        filterMap.put("/captcha.jpg", "anon");<br>        filterMap.put("/**", "oauth2");<br>        shiroFilter.setFilterChainDefinitionMap(filterMap);<br><br>        return shiroFilter;<br>    }</code></pre>
+       <p><br></p>
+       <p>LifecycleBeanPostProcessor&nbsp;</p>
+       <p>作用是管理shiro bean生命周期</p>
+       <pre><code>@Bean("lifecycleBeanPostProcessor")<br>    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {<br>        return new LifecycleBeanPostProcessor();<br>    }</code></pre>
+       <p><br></p>
+       <p>&nbsp;</p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>

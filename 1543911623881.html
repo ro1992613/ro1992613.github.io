@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">shiro 集合springboot（2）oAuthFilter</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-12-04</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <p><br></p>
+       <pre><code>/**<br> * oauth2过滤器<br> *<br> * @author chenshun<br> * @email sunlightcs@gmail.com<br> * @date 2017-05-20 13:00<br> */<br>public class OAuth2Filter extends AuthenticatingFilter {<br><br>    @Override<br>    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {<br>        //获取请求token<br>        String token = getRequestToken((HttpServletRequest) request);<br><br>        if(StringUtils.isBlank(token)){<br>            return null;<br>        }<br><br>        return new OAuth2Token(token);<br>    }<br><br>    @Override<br>    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {<br>        if(((HttpServletRequest) request).getMethod().equals(RequestMethod.OPTIONS.name())){<br>            return true;<br>        }<br><br>        return false;<br>    }<br><br>    @Override<br>    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {<br>        //获取请求token，如果token不存在，直接返回401<br>        String token = getRequestToken((HttpServletRequest) request);<br>        if(StringUtils.isBlank(token)){<br>            HttpServletResponse httpResponse = (HttpServletResponse) response;<br>            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");<br>            httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());<br><br>            String json = new Gson().toJson(R.error(HttpStatus.SC_UNAUTHORIZED, "invalid token"));<br><br>            httpResponse.getWriter().print(json);<br><br>            return false;<br>        }<br><br>        return executeLogin(request, response);<br>    }<br><br>    @Override<br>    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {<br>        HttpServletResponse httpResponse = (HttpServletResponse) response;<br>        httpResponse.setContentType("application/json;charset=utf-8");<br>        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");<br>        httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());<br>        try {<br>            //处理登录失败的异常<br>            Throwable throwable = e.getCause() == null ? e : e.getCause();<br>            R r = R.error(HttpStatus.SC_UNAUTHORIZED, throwable.getMessage());<br><br>            String json = new Gson().toJson(r);<br>            httpResponse.getWriter().print(json);<br>        } catch (IOException e1) {<br><br>        }<br><br>        return false;<br>    }<br><br>    /**<br>     * 获取请求的token<br>     */<br>    private String getRequestToken(HttpServletRequest httpRequest){<br>        //从header中获取token<br>        String token = httpRequest.getHeader("token");<br><br>        //如果header中不存在token，则从参数中获取token<br>        if(StringUtils.isBlank(token)){<br>            token = httpRequest.getParameter("token");<br>        }<br><br>        return token;<br>    }<br><br><br>}</code></pre>
+       <p><br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
