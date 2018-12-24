@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">java 常用的四种线程池</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-12-24</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <p><strong>1.newSingleThreadExecutor</strong></p>
+       <p>创建一个<span style="color: rgb(249, 150, 59);">单线程</span>的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。</p>
+       <p><strong>2.newFixedThreadPool</strong></p>
+       <p>创建<span style="color: rgb(249, 150, 59);">固定大小</span>的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。</p>
+       <p><strong>3.newCachedThreadPool</strong></p>
+       <p>创建一个<span style="color: rgb(249, 150, 59);">可缓存的线程池</span>。如果线程池的大小超过了处理任务所需要的线程，</p>
+       <p>那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。</p>
+       <p><strong>4.newScheduledThreadPool</strong></p>
+       <p>创建一个大小无限的线程池。<span style="color: rgb(249, 150, 59);">此线程池支持定时以及周期性执行任务的需求。</span></p>
+       <p><br></p>
+       <p>虽说是四种，但是创建方式都差不多</p>
+       <pre><code>ExecutorService pool=Executors.newFixedThreadPool(10);<br><br>ExecutorService pool1=Executors.newCachedThreadPool();<br><br>ExecutorService pool2=Executors.newSingleThreadExecutor();<br><br>ExecutorService pool3=Executors.newScheduledThreadPool(10);</code></pre>
+       <p><br></p>
+       <p><strong>newScheduledThreadPool</strong>&nbsp; 的执行方式可以是定期，周期执行的<br></p>
+       <pre><code>ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);<br>        exec.schedule(command, delay, unit);</code></pre>
+       <pre><code>exec.scheduleAtFixedRate(new Runnable() {//每隔一段时间就触发异常<br>           @Override <br>           publicvoid run() {<br>              //throw new RuntimeException();<br>              System.out.println("================");<br>           }<br>         }, 1000, 5000, TimeUnit.MILLISECONDS);
+exec.scheduleAtFixedRate(new Runnable() {//每隔一段时间打印系统时间，证明两者是互不影响的 <br>           @Override <br>           publicvoid run() { <br>              System.out.println(System.nanoTime()); <br>           } <br>         }, 1000, 2000, TimeUnit.MILLISECONDS); <br>  }</code></pre>
+       <p><br></p>
+       <p>这里分享一个复杂的应用场景：创建一个执行器，不断执行任务队列（队列可以添加任务）</p>
+       <p>执行器</p>
+       <pre><code>package com.java.threadpool;<br><br>import java.util.ArrayList;<br>import java.util.List;<br>import java.util.concurrent.Callable;<br>import java.util.concurrent.ExecutionException;<br>import java.util.concurrent.ExecutorService;<br>import java.util.concurrent.Executors;<br>import java.util.concurrent.Future;<br><br>public class CachedThreadPoolTest implements Runnable {<br>    <br>    <br>    public void add(int size) {<br>        //ExecutorService cachedThreadPool=localCachedThreadPool.get();<br>        List&lt;Future&gt; list=Test.list;<br>        for(int i=0;i&lt;size;i++) {<br>            Future future =cachedThreadPool.submit(new MyCallable());<br>            list.add(future);<br>        }<br>    }<br><br>    //ThreadLocal&lt;ExecutorService&gt; localCachedThreadPool = new ThreadLocal&lt;ExecutorService&gt;();<br>    //ThreadLocal&lt;List&lt;Future&gt;&gt; localList = new ThreadLocal&lt;List&lt;Future&gt;&gt;();<br>    //ExecutorService cachedThreadPool=Executors.newCachedThreadPool();<br>    <br>    ExecutorService cachedThreadPool=Executors.newFixedThreadPool(10);<br>    <br>    public void run() {<br>        //ExecutorService cachedThreadPool=localCachedThreadPool.get();<br>        List&lt;Future&gt; list=Test.list;<br>        for(int i=0;i&lt;10;i++) {<br>            Future future =cachedThreadPool.submit(new MyCallable());<br>            list.add(future);<br>        }<br>        try {<br>            runtask();<br>        } catch (InterruptedException e) {<br>            // TODO Auto-generated catch block<br>            e.printStackTrace();<br>        } catch (ExecutionException e) {<br>            // TODO Auto-generated catch block<br>            e.printStackTrace();<br>        }<br>    }<br>    <br>    <br>    public synchronized void runtask() throws InterruptedException, ExecutionException {<br>      //localCachedThreadPool.get();<br>      List&lt;Future&gt; list=Test.list;<br>      int i=0;<br>      while(list.size()&gt;=0) {<br>          if(list.size()==0) {<br>              System.out.println("no task");<br>              try {<br>                wait(1000);<br>                } catch (InterruptedException e) {<br>                    e.printStackTrace();<br>                }<br>              continue;<br>          }<br>          System.out.println("listsize="+list.size() +" i="+i);<br>          Thread.sleep(100);<br>          if(i&gt;=list.size()) {<br>              i=0;<br>              continue;<br>          }<br>          Future future =list.get(i);<br>          if(future.isDone()) {<br>              System.out.println("done");<br>              System.out.println(future.get());<br>              list.remove(i);<br>              i=0;<br>//              if(list.size()==1) {<br>//                  System.out.println("******add new Task!");<br>//                  Thread.sleep(1000);<br>//                  while(true) {<br>//                      Future f =cachedThreadPool.submit(new MyCallable());<br>//                      list.add(f);<br>//                      if(list.size()&gt;100) {<br>//                          break;<br>//                      }<br>//                  }<br>//              }<br>              continue;<br>          }else {<br>              System.out.println("undone");<br>              i++;<br>              continue;<br>          }<br>      }<br>    }<br><br>}<br><br>class MyCallable implements Callable{<br><br>    @Override<br>    public Object call() throws Exception {<br>        // TODO Auto-generated method stub<br>        int s=(int) (Math.random()*100);<br>        Thread.sleep(s+2000);<br>        return Thread.currentThread().getId();<br>    }<br>    <br>}<br><br>class myThread implements Runnable{<br><br>    @Override<br>    public void run() {<br>        // TODO Auto-generated method stub<br>        while(true) {<br>            System.out.println("runnable "+Thread.currentThread().getId());<br>            try {<br>                Thread.sleep(1000);<br>            } catch (InterruptedException e) {<br>                // TODO Auto-generated catch block<br>                e.printStackTrace();<br>            }<br>        }<br>    }<br>    <br>}</code></pre>
+       <p>任务队列和调用执行器</p>
+       <pre><code>package com.java.threadpool;<br><br>import java.util.ArrayList;<br>import java.util.List;<br>import java.util.concurrent.Future;<br><br>public class Test {<br><br>    public static List&lt;Future&gt; list=new ArrayList&lt;&gt;();<br>    <br>    public static void main(String[] args) throws InterruptedException {<br>        CachedThreadPoolTest r=new CachedThreadPoolTest();<br>        Thread t=new Thread(r);<br>        t.start();<br>        for(int i=0;i&lt;=20;i++) {<br>            System.out.println("add "+i);<br>            r.add(i);<br>            Thread.sleep(100);<br>        }<br>        while(true) {<br>            if(list.size()==0) {<br>                System.out.println("add new Task !!!!!!!!!!!!!!!!!!!");<br>                r.add((int) (Math.random()*100));<br>            }<br>            Thread.sleep(100);<br>        }<br>    }<br>}</code></pre>
+       <p><br></p>
+       <p><br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>

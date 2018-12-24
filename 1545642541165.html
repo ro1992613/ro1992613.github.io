@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">Java线程并发中常见的锁</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-12-24</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <h1>1.偏向锁</h1>
+       <p>　</p>
+       <p>偏向锁是JDK1.6提出来的一种锁优化的机制。其核心的思想是，如果程序没有竞争，则取消之前已经取得锁的线程同步操作。也就是说，若某一锁被线程获取后，便进入偏向模式，当线程再次请求这个锁时，就无需再进行相关的同步操作了，从而节约了操作时间，如果在此之间有其他的线程进行了锁请求，则锁退出偏向模式。在JVM中使用-XX:+UseBiasedLocking</p>
+       <div>
+        <div>
+         <pre><code>package jvmProject;<br><br>import java.util.List;<br>import java.util.Vector;<br><br>public class Biased {<br><br>    public static List&lt;Integer&gt; numberList = new Vector&lt;Integer&gt;();<br>    public static void main(String[] args) {<br>        long begin = System.currentTimeMillis();<br>        int count = 0;<br>        int startnum = 0;<br>        while(count&lt;10000000){<br>            numberList.add(startnum);<br>            startnum+=2;<br>            count++;        <br>        }<br>        long end = System.currentTimeMillis();<br>        System.out.println(end-begin);<br>    }<br>}</code></pre>
+         <p><br></p>
+        </div>
+        <div>
+         <br>
+        </div>
+       </div>
+       <p>初始化一个Vector，往里面添加10000000个Integer对象，然后输出时间差。以此来测试偏向锁的性能。至于为什么要使用Vector而不使用ArrayList呢？</p>
+       <p>因为ArrayList是线程不安全的，Vector是线程安全的。这样说可能还不够具体，可以翻看一下源码吧。</p>
+       <p><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523150603413-1375155688.png" alt=""><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523150653225-1051353574.png" alt="" width="766" height="346"></p>
+       <p>Vector中的几乎所有操作是带有sychronized的，而ArrayList是没有的，所以Vector是线程安全的。</p>
+       <p>接下来我们来测试一下，开启偏向锁和不开启偏向锁对程序性能的影响有多大。</p>
+       <p>&nbsp;</p>
+       <p>&nbsp;</p>
+       <p>配置JVM启动（开启偏向锁）参数为：</p>
+       <p><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523151118163-684455502.png" alt=""></p>
+       <p><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523151221413-1279257194.png" alt=""></p>
+       <p>&nbsp;</p>
+       <p>&nbsp;</p>
+       <p>&nbsp;</p>
+       <p>配置JVM启动（关闭偏向锁）参数为：</p>
+       <p><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523151436616-1529174872.png" alt=""></p>
+       <p><img src="https://images2015.cnblogs.com/blog/656873/201605/656873-20160523151503350-1416932264.png" alt=""></p>
+       <p>&nbsp;</p>
+       <p>&nbsp;</p>
+       <p>Perfect！开启偏向锁的程序运行时间明显较短，开启偏向锁比不开启偏向锁，在单个线程中操作一个对象的同步方法，是有一定的优势的。其实也可以这样理解，当只有一个线程操作带有同步方法的Vector对象的时候，此时对Vector的操作就转变成了对ArrayList的操作。</p>
+       <p>&nbsp;</p>
+       <p>偏向锁在锁竞争激烈的场合没有太强的优化效果，因为大量的竞争会导致持有锁的线程不停地切换，锁也很难保持在偏向模式，此时，使用偏向锁不仅得不到性能的优化，反而有可能降低系统的性能，因此，在激烈竞争的场合，可以尝试使用</p>
+       <p>-XX:-UseBiastedLocking参数禁用偏向锁。</p>
+       <p>&nbsp;</p>
+       <h1>2.轻量级锁</h1>
+       <p>&nbsp;</p>
+       <p>如果偏向锁失败，Java虚拟机就会让线程申请轻量级锁，轻量级锁在虚拟机内部，使用一个成为BasicObjectLock的对象实现的，这个对象内部由一个BasicLock对象和一个持有该锁的Java对象指针组成。BasicObjectLock对象放置在Java栈帧中。在BasicLock对象内部还维护着displaced_header字段，用于备份对象头部的Mark Word.</p>
+       <p>当一个线程持有一个对象的锁的时候，对象头部Mark Word信息如下</p>
+       <p>[ptr &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |00] locked &nbsp;</p>
+       <p>末尾的两位比特为00，整个Mark Word为指向BasicLock对象的指针。由于BasicObjectLock对象在线程栈中，因此该指针必然指向持有该锁的线程栈空间。当需要判断一个线程是否持有该对象时，只需要简单地判断对象头的指针是否在当前线程的栈地址范围即可。同时，BasicLock对象的displaced_header，备份了原对象的Mark word内容，BasicObjectLock对象的obj字段则指向持有锁的对象头部。</p>
+       <p>&nbsp;</p>
+       <h1>3.重量级锁</h1>
+       <p>&nbsp;</p>
+       <p>当轻量级锁失败，虚拟机就会使用重量级锁。在使用重量级锁的时，对象的Mark Word如下：</p>
+       <p>[ptr &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |10] &nbsp;monitor</p>
+       <p>&nbsp;</p>
+       <p>重量级锁在操作过程中，线程可能会被操作系统层面挂起，如果是这样，线程间的切换和调用成本就会大大提高。</p>
+       <p>&nbsp;</p>
+       <h1>4.自旋锁</h1>
+       <p>&nbsp; &nbsp; &nbsp;&nbsp;自旋锁可以使线程在没有取得锁的时候，不被挂起，而转去执行一个空循环，（即所谓的自旋，就是自己执行空循环），若在若干个空循环后，线程如果可以获得锁，则继续执行。若线程依然不能获得锁，才会被挂起。</p>
+       <p>使用自旋锁后，线程被挂起的几率相对减少，线程执行的连贯性相对加强。因此，对于那些锁竞争不是很激烈，锁占用时间很短的并发线程，具有一定的积极意义，但对于锁竞争激烈，单线程锁占用很长时间的并发程序，自旋锁在自旋等待后，往往毅然无法获得对应的锁，不仅仅白白浪费了CPU时间，最终还是免不了被挂起的操作 ，反而浪费了系统的资源。</p>
+       <p>在JDK1.6中，Java虚拟机提供-XX:+UseSpinning参数来开启自旋锁，使用-XX:PreBlockSpin参数来设置自旋锁等待的次数。</p>
+       <p>在JDK1.7开始，自旋锁的参数被取消，虚拟机不再支持由用户配置自旋锁，自旋锁总是会执行，自旋锁次数也由虚拟机自动调整。</p>
+       <p><br></p>
+       <p>转自https://www.cnblogs.com/think-in-java/p/5520462.html</p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
