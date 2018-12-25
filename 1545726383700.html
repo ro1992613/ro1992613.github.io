@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <title>GitBlog</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="format-detection" content="telephone=no"> 
+  <meta name="renderer" content="webkit"> 
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"> 
+  <style>
+    @media only screen and (min-width: 1200px) {
+      .blog-g-fixed {
+        max-width: 1200px;
+      }
+    }
+
+    @media only screen and (min-width: 641px) {
+      .blog-sidebar {
+        font-size: 1.4rem;
+      }
+    }
+
+    .blog-main {
+      padding: 20px 0;
+    }
+
+    .blog-title {
+      margin: 10px 0 20px 0;
+    }
+
+    .blog-meta {
+      font-size: 14px;
+      margin: 10px 0 20px 0;
+      color: #222;
+    }
+
+    .blog-meta a {
+      color: #27ae60;
+    }
+
+    .blog-pagination a {
+      font-size: 1.4rem;
+    }
+
+    .blog-team li {
+      padding: 4px;
+    }
+
+    .blog-team img {
+      margin-bottom: 0;
+    }
+
+    .blog-content img,
+    .blog-team img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .blog-footer {
+      padding: 10px 0;
+      text-align: center;
+    }
+  </style> 
+ </head> 
+ <body> 
+  <header class="am-topbar"> 
+   <h1 class="am-topbar-brand"> <a href="javascript:void(0);">GitBlog</a> </h1> 
+   <div class="am-collapse am-topbar-collapse"> 
+    <ul class="am-nav am-nav-pills am-topbar-nav"> 
+     <li><a href="index.html">首页</a></li> 
+     <li><a href="collection.html">专辑</a></li> 
+     <li><a href="admin/index.html">后台</a></li> 
+     <li><a href="https://github.com/ro1992613/gitblog">gitblog项目</a></li> 
+    </ul> 
+   </div> 
+  </header> 
+  <div class="am-g am-g-fixed blog-g-fixed"> 
+   <div class="am-u-md-8"> 
+    <hr class="am-article-divider blog-hr"> 
+    <article class="blog-main"> 
+     <h3 class="am-article-title"> <a href="#"><span id="gitblog_title">原形模式，clone与new的区别，浅拷贝和深拷贝</span></a> </h3> 
+     <h4 class="am-article-meta blog-meta">创建于 <span id="gitblog_date">2018-12-25</span> </h4> 
+     <hr class="am-article-divider blog-hr"> 
+     <div class="am-g blog-content"> 
+      <div id="gitblog_content">
+       <h1>原型模式</h1>
+       <p>原型模式（Prototype Pattern）<span style="color: rgb(249, 150, 59);">是用于创建重复的对象，同时又能保证性能</span>。这种类型的设计模式属于<span style="color: rgb(249, 150, 59);">创建型模式</span>，它提供了一种创建对象的最佳方式。</p>
+       <p>这种模式是实现了一个原型接口，该接口用于创建当前对象的克隆。当直接创建对象的代价比较大时，则采用这种模式。例如，一个对象需要在一个高代价的数据库操作之后被创建。我们可以缓存该对象，在下一个请求时返回它的克隆，在需要的时候更新数据库，以此来减少数据库调用。</p>
+       <h2>介绍</h2>
+       <p><b>意图：</b><span style="color: rgb(249, 150, 59);">用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</span></p>
+       <p><b>主要解决：</b><span style="color: rgb(249, 150, 59);">在运行期建立和删除原型。</span></p>
+       <p><b>何时使用：</b>&nbsp;1、当一个系统应该独立于它的产品创建，构成和表示时。 2、当要实例化的类是在运行时刻指定时，例如，通过动态装载。 3、为了避免创建一个与产品类层次平行的工厂类层次时。 4、当一个类的实例只能有几个不同状态组合中的一种时。建立相应数目的原型并克隆它们可能比每次用合适的状态手工实例化该类更方便一些。</p>
+       <p><b>如何解决：</b><span style="color: rgb(249, 150, 59);">利用已有的一个原型对象，快速地生成和原型对象一样的实例</span>。</p>
+       <p><b>关键代码：</b>&nbsp;1、实现克隆操作，在 JAVA 继承 Cloneable，重写 clone()，在 .NET 中可以使用 Object 类的 MemberwiseClone() 方法来实现对象的浅拷贝或通过序列化的方式来实现深拷贝。 2、原型模式同样用于隔离类对象的使用者和具体类型（易变类）之间的耦合关系，它同样要求这些"易变类"拥有稳定的接口。</p>
+       <p><b>应用实例：</b>&nbsp;1、细胞分裂。 2、JAVA 中的 Object clone() 方法。</p>
+       <p><b>优点：</b>&nbsp;1、性能提高。 2、逃避构造函数的约束。</p>
+       <p><b>缺点：</b>&nbsp;1、配备克隆方法需要对类的功能进行通盘考虑，这对于全新的类不是很难，但对于已有的类不一定很容易，特别当一个类引用不支持串行化的间接对象，或者引用含有循环结构的时候。 2、必须实现 Cloneable 接口。</p>
+       <p><b>使用场景：</b>&nbsp;1、资源优化场景。 2、类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等。 3、性能和安全要求的场景。 4、通过 new 产生一个对象需要非常繁琐的数据准备或访问权限，则可以使用原型模式。 5、一个对象多个修改者的场景。 6、一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供调用者使用。 7、在实际项目中，原型模式很少单独出现，一般是和工厂方法模式一起出现，通过 clone 的方法创建一个对象，然后由工厂方法提供给调用者。原型模式已经与 Java 融为浑然一体，大家可以随手拿来使用。</p>
+       <p><b>注意事项：</b>与通过对一个类进行实例化来构造新对象不同的是，原型模式是通过拷贝一个现有对象生成新对象的。浅拷贝实现 Cloneable，重写，深拷贝是通过实现 Serializable 读取二进制流。</p>
+       <p><br></p>
+       <p><span style="font-weight: bold;">clone与new的区别：</span><br><br>（1）在java中clone()与new都能创建对象。<br><br>（2）clone()不会调用构造方法；new会调用构造方法。<br><br>（3）clone()能快速创建一个已有对象的副本，即创建对象并且将已有对象中所有属性值克隆；new只能在JVM中申请一个空的内存区域，对象的属性值要通过构造方法赋值。<br><br>注意：<br><br>（1）使用clone()类必须实现java.lang.Cloneable接口并重写Object类的clone()方法，如果没有实现Cloneable()接口将会抛出CloneNotSupportedException异常。（此类实现java.lang.Cloneable接口，指示Object.clone()方法可以合法的对该类实例进行按字段复制。）<br><br>（2）默认的Object.clone()方法是浅拷贝，<span style="color: rgb(249, 150, 59);">创建好对象的副本然后通过“赋值”拷贝内容，如果类包含引用类型变量，那么原始对象和克隆对象的引用将指向相同的引用内容。</span><br><br></p>
+       <p><span style="font-weight: bold;">浅拷贝和深拷贝</span></p>
+       <p>1.拷贝的引入<br>（1）引用拷贝<br><br>创建一个指向对象的引用变量的拷贝。<br><br>例1：<br></p>
+       <pre><code>Teacher teacher = new Teacher("Taylor",26);<br>Teacher otherteacher = teacher;<br>System.out.println(teacher);<br>System.out.println(otherteacher);</code></pre>
+       <p>输出结果：</p>
+       <p><br>blog.Teacher@355da254<br>blog.Teacher@355da254<br><br></p>
+       <p>（2）对象拷贝<br><br>创建对象本身的一个副本。<br><br>例2：<br><br></p>
+       <pre><code>Teacher teacher = new Teacher("Swift",26);<br>Teacher otherteacher = (Teacher)teacher.clone();<br>System.out.println(teacher);<br>System.out.println(otherteacher);</code></pre>
+       <p>输出结果:<br>blog.Teacher@355da254<br>blog.Teacher@4dc63996</p>
+       <p><br>结果分析：由输出结果可以看出，它们的地址是不同的，也就是说创建了新的对象， 而不是把原对象的地址赋给了一个新的引用变量,这就叫做对象拷贝。<br><br></p>
+       <p>注：深拷贝和浅拷贝都是对象拷贝<br><br><span style="font-weight: bold;">2.浅拷贝</span><br>（1）定义：<br><br><span style="color: rgb(249, 150, 59);">被复制对象的所有变量都含有与原来的对象相同的值，而所有的对其他对象的引用仍然指向原来的对象。<span style="background-color: rgb(238, 236, 224); font-weight: bold; font-size: large;">即对象的浅拷贝会对“主”对象进行拷贝，但不会复制主对象里面的对象。</span></span>”里面的对象“会在原来的对象和它的副本之间共享。<br><br>简而言之，浅拷贝仅仅复制所考虑的对象，而不复制它所引用的对象<br><br>（2）浅拷贝实例：<br><br>例3：<br></p>
+       <pre><code>public class ShallowCopy {<br>    public static void main(String[] args) throws CloneNotSupportedException {<br>        Teacher teacher = new Teacher();<br>        teacher.setName("Delacey");<br>        teacher.setAge(29);<br><br>        Student2 student1 = new Student2();<br>        student1.setName("Dream");<br>        student1.setAge(18);<br>        student1.setTeacher(teacher);<br><br>        Student2 student2 = (Student2) student1.clone();<br>        System.out.println("拷贝后");<br>        System.out.println(student2.getName());<br>        System.out.println(student2.getAge());<br>        System.out.println(student2.getTeacher().getName());<br>        System.out.println(student2.getTeacher().getAge());<br>        System.out.println("修改老师的信息后-------------");<br><br>        // 修改老师的信息<br>        teacher.setName("Jam");<br>        System.out.println(student1.getTeacher().getName());<br>        System.out.println(student2.getTeacher().getName());<br>    }<br><br>}<br><br>class Teacher implements Cloneable<br>{<br>    private String name;<br>    private int age;<br><br>    public String getName()<br>    {<br>        return name;<br>    }<br><br>    public void setName(String name)<br>    {<br>        this.name = name;<br>    }<br><br>    public int getAge()<br>    {<br>        return age;<br>    }<br><br>    public void setAge(int age)<br>    {<br>        this.age = age;<br>    }<br><br>}<br><br>class Student2 implements Cloneable<br>{<br>    private String name;<br>    private int age;<br>    private Teacher teacher;<br><br>    public String getName()<br>    {<br>        return name;<br>    }<br><br>    public void setName(String name)<br>    {<br>        this.name = name;<br>    }<br><br>    public int getAge()<br>    {<br>        return age;<br>    }<br><br>    public void setAge(int age)<br>    {<br>        this.age = age;<br>    }<br><br>    public Teacher getTeacher()<br>    {<br>        return teacher;<br>    }<br><br>    public void setTeacher(Teacher teacher)<br>    {<br>        this.teacher = teacher;<br>    }<br><br>    @Override<br>    public Object clone() throws CloneNotSupportedException<br>    {<br>        Object object = super.clone();<br>        return object;<br>    }<br><br>}</code></pre>
+       <p>输出结果：<br><br>拷贝后<br>Dream<br>18<br>Delacey<br>29<br>修改老师的信息后-------------<br>Jam<br>Jam<br><br>结果分析： 两个引用student1和student2指向不同的两个对象，但是两个引用student1和student2中的两个teacher引用指向的是同一个对象，所以说明是浅拷贝。<br><br></p>
+       <p><span style="font-weight: bold;">3.深拷贝</span><br>（1）定义：<br><br>深拷贝是一个整个独立的对象拷贝，深拷贝会拷贝所有的属性,并拷贝属性指向的动态分配的内存。当对象和它所引用的对象一起拷贝时即发生深拷贝。深拷贝相比于浅拷贝速度较慢并且花销较大。<br><br><span style="color: rgb(249, 150, 59);">简而言之，深拷贝把要复制的对象所引用的对象都复制了一遍。</span><br><br>（2）实现深拷贝（实例1）：<br><br>例4：<br><br></p>
+       <pre><code>public class DeepCopy {<br>public static void main(String[] args) throws Exception<br>{<br>Teacher2 teacher = new Teacher2();<br>teacher.setName("Delacey");<br>teacher.setAge(29);<br><br>Student3 student1 = new Student3();<br>student1.setName("Dream");<br>student1.setAge(18);<br>student1.setTeacher(teacher);<br><br>Student3 student2 = (Student3) student1.clone();<br>System.out.println("拷贝后");<br>System.out.println(student2.getName());<br>System.out.println(student2.getAge());<br>System.out.println(student2.getTeacher().getName());<br>System.out.println(student2.getTeacher().getAge());<br>System.out.println("修改老师的信息后-------------");<br><br>// 修改老师的信息<br>teacher.setName("Jam");<br>System.out.println(student1.getTeacher().getName());<br>System.out.println(student2.getTeacher().getName());<br>}<br>}<br><br>class Teacher2 implements Cloneable {<br>private String name;<br>private int age;<br><br>public String getName()<br>{<br>return name;<br>}<br><br>public void setName(String name)<br>{<br>this.name = name;<br>}<br><br>public int getAge()<br>{<br>return age;<br>}<br><br>public void setAge(int age)<br>{<br>this.age = age;<br>}<br><br>@Override<br>public Object clone() throws CloneNotSupportedException<br>{<br>return super.clone();<br>}<br><br>}<br><br>class Student3 implements Cloneable {<br>private String name;<br>private int age;<br>private Teacher2 teacher;<br><br>public String getName()<br>{<br>return name;<br>}<br><br>public void setName(String name)<br>{<br>this.name = name;<br>}<br><br>public int getAge()<br>{<br>return age;<br>}<br><br>public void setAge(int age)<br>{<br>this.age = age;<br>}<br><br>public Teacher2 getTeacher()<br>{<br>return teacher;<br>}<br><br>public void setTeacher(Teacher2 teacher)<br>{<br>this.teacher = teacher;<br>}<br><br>@Override<br>public Object clone() throws CloneNotSupportedException<br>{<br><span style="color: rgb(249, 150, 59);">// 浅复制时：<br>// Object object = super.clone();<br>// return object;<br><br>// 改为深复制：<br>Student3 student = (Student3) super.clone();<br>// 本来是浅复制，现在将Teacher对象复制一份并重新set进来<br>student.setTeacher((Teacher2) student.getTeacher().clone());<br>return student;</span><br>}<br><br>}</code></pre>
+       <p><br></p>
+       <p>输出结果：<br><br>拷贝后<br>Dream<br>18<br>Delacey<br>29<br>修改老师的信息后-------------<br>Jam<br>Delacey<br><br>结果分析： <br>两个引用student1和student2指向不同的两个对象，两个引用student1和student2中的两个teacher引用指向的是两个对象，但对teacher对象的修改只能影响student1对象,所以说是深拷贝。<br><br></p>
+       <p><span style="font-weight: bold;">（3）利用序列化实现深拷贝（实例2）</span><br><br>例5：<br><br></p>
+       <pre><code>import java.io.ByteArrayInputStream;<br>import java.io.ByteArrayOutputStream;<br>import java.io.ObjectInputStream;<br>import java.io.ObjectOutputStream;<br>import java.io.Serializable;<br><br>public class DeepCopyServiable {<br>public static void main(String[] args) throws Exception {<br>Teacher3 t = new Teacher3();<br>t.setName("Taylor");<br>t.setAge(28);<br><br>Student3 s1 = new Student3();<br>s1.setAge(20);<br>s1.setName("blank space");<br>s1.setTeacher(t);<br><br>Student3 s2 = (Student3) s1.deepClone();<br><br>System.out.println("拷贝后:");<br>System.out.println(s2.getName());<br>System.out.println(s2.getAge());<br>System.out.println(s2.getTeacher().getName());<br>System.out.println(s2.getTeacher().getAge());<br>System.out.println("---------------------------");<br><br>t.setName("swift");<br><br>System.out.println("修改后：");<br>System.out.println(s1.getTeacher().getName());<br>System.out.println(s2.getTeacher().getName());<br>}<br><br>}<br><br>class Teacher3 implements Serializable<br>{<br>private String name;<br>private int age;<br><br>public String getName()<br>{<br>return name;<br>}<br><br>public void setName(String name)<br>{<br>this.name = name;<br>}<br><br>public int getAge()<br>{<br>return age;<br>}<br><br>public void setAge(int age)<br>{<br>this.age = age;<br>}<br><br>}<br><br>class Student3 implements Serializable<br>{<br>private String name;<br>private int age;<br>private Teacher3 teacher;<br><br>public String getName()<br>{<br>return name;<br>}<br><br>public void setName(String name)<br>{<br>this.name = name;<br>}<br><br>public int getAge()<br>{<br>return age;<br>}<br><br>public void setAge(int age)<br>{<br>this.age = age;<br>}<br><br>public Teacher3 getTeacher()<br>{<br>return teacher;<br>}<br><br>public void setTeacher(Teacher3 teacher)<br>{<br>this.teacher = teacher;<br>}<br><br><span style="font-size: large; color: rgb(249, 150, 59);">public Object deepClone() throws Exception<br>{<br>// 序列化<br>ByteArrayOutputStream bos = new ByteArrayOutputStream();<br>ObjectOutputStream oos = new ObjectOutputStream(bos);<br><br>oos.writeObject(this);<br><br>// 反序列化<br>ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());<br>ObjectInputStream ois = new ObjectInputStream(bis);<br><br>return ois.readObject();<br>}</span><br><br>}</code></pre>
+       <p><br></p>
+       <p>输出结果：<br><br>拷贝后:<br>blank space<br>20<br>Taylor<br>28<br>---------------------------<br>修改后：<br>swift<br>Taylor<br><br>结果分析：说明用序列化的方式实现了对象的深拷贝<br><br></p>
+      </div> 
+     </div> 
+    </article> 
+    <div id="gitmentContainer"></div> 
+    <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"> 
+    <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script> 
+    <script>
+        var gitment = new Gitment({
+          id: location.href, // 可选。默认为 location.href
+          owner: 'ro1992613',
+          repo: 'ro1992613.github.io',
+          oauth: {
+            client_id: 'ea18674e6f2820f9fcce',
+            client_secret: '49c9fcc14c9f4275a3903c745ea78cf74514b7fe',
+          },
+        });
+        gitment.render('gitmentContainer')
+      </script> 
+    <hr class="am-article-divider blog-hr"> 
+   </div> 
+   <div class="am-u-md-4 blog-sidebar"> 
+    <div class="am-panel-group"> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-bd"> 
+       <iframe height="50" frameborder="0" scrolling="no" hspace="0" src="https://i.tianqi.com/index.php?c=code&amp;id=12&amp;icon=1&amp;num=2&amp;site=12"> </iframe> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       关于项目
+      </div> 
+      <div class="am-panel-bd"> 
+       <p>做过很多个的博客了，发现自己做博客最大的问题就是，没钱！虽然也会买一些云服务器，但是还是觉得好贵啊！</p> 
+       <p>后来听说可以用github做博客，自己也折腾过hexo之类的东东，但始终用起来很不爽！毕竟是别人定制的东西，很多diy的地方都不是那么尽人意！</p> 
+       <p>所以最后决定自己写一个，反正git的页面就是些静态页面呗！自己写个内容管理系统还不是手到擒来！后台用springboot很容易就搞定了，数据库在几番研究后使用了非常轻量的嵌入式数据库，h2！然后数据移植的问题也搞定了！用vue随意搭了个管理页面，写上几个模板，新鲜出炉的gitblog就做好了！</p> 
+       <p>接下来，优化模板的样式，增加标签功能，把管理页面嵌入博客，加入评论！！！！</p> 
+       <a class="am-btn am-btn-success am-btn-sm" target="_blank" href="https://github.com/ro1992613/gitblog">查看更多 →</a> 
+      </div> 
+     </section> 
+     <section class="am-panel am-panel-default"> 
+      <div class="am-panel-hd">
+       文章目录
+      </div> 
+      <ul class="am-list blog-list" id="simple-list"> 
+       <li><a href="#">Google fonts 的字體（sans-serif 篇）</a></li> 
+      </ul> 
+     </section> 
+    </div> 
+   </div> 
+  </div> 
+  <footer class="blog-footer"> 
+   <p>gitblog<br> <small>© Copyright cyp. by robert.</small> </p> 
+  </footer> 
+  <script src="assets/js/jquery.min.js"></script> 
+  <script src="assets/js/amazeui.min.js"></script> 
+  <script src="store.js"></script> 
+  <script>
+      function addHtml_simple(v){
+          var html='<li><a href="'+v.id+'.html"><i class="am-icon-book"></i>'+v.title+'</a></li>';
+          return html;
+      }
+
+      $(function() {
+          $("#simple-list").html("");
+          data.map(function(v,index){
+            if(index<=10){
+                var html=addHtml_simple(v);
+                $("#simple-list").append(html);
+            }
+          });
+      });
+  </script>  
+ </body>
+</html>
